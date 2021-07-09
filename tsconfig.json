@@ -11,13 +11,22 @@
     "moduleResolution": "node",
     "importHelpers": true,
     "target": "es2015",
+    "jsx": "react",
+    "resolveJsonModule" : true,
+    "allowSyntheticDefaultImports": true,
     "lib": [
       "es2018",
       "dom"
-    ]
+    ] ,
+    "paths": {
+      "stream" : ["node_modules/stream-browserify/index.js"],
+      "crypto" : ["node_modules/crypto-js/index.js"],
+      "cbor" : ["node_modules/cbor"]
+    }
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
     "strictInjectionParameters": true
-  }
+  } ,"include": [
+    "src" ]
 }

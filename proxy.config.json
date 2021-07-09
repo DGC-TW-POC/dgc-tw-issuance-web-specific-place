@@ -1,0 +1,12 @@
+{
+    "/api": {
+        "target": "http://localhost:9191",
+        "secure": false
+    } ,
+    "/dgca-issuance-service" : {
+        "target" : "https://dgci.dicom.tw",
+        "secure" : true,
+        "changeOrigin": true,
+        "auth" : "cylab:cy-lab"
+    }
+}

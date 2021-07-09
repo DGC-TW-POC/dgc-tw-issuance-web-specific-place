@@ -1,0 +1,334 @@
+//Font Definitions
+
+// Override default variables before the import
+$body-bg: #cfcfcf;
+$font-family-base: Arial, sans-serif;
+$primary: #004494;
+$primary-dark: #002f67;
+$info: #ffd617;
+$dark: #404040;
+$gray-100: #f2f5f9;
+$body-color: $dark;
+$light: #ebebeb;
+
+// Import Bootstrap and its default variables
+@import "~bootstrap/scss/bootstrap.scss";
+
+$header-height: 120px;
+$menu-width: 120px;
+$menu-padding: 1rem;
+$data-card-border-radius: 0px;
+$input-border-radius: 4px;
+$user-image-width: 39px;
+
+hr {
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0px;
+    border-top: 1px solid #d9d9d9;
+}
+
+#qt-body {
+    background-color: #ffffff;
+    display: flex;
+    flex-flow: column;
+    flex: 1;
+    padding: 1rem 1rem 2rem 1rem;
+}
+
+#qt-footer {
+    margin: 0px;
+    height: 32px;
+    width: 100%;
+    align-items: center;
+}
+
+#root {
+    height: 100%;
+    display: flex;
+    flex-flow: column;
+}
+
+#data-card {
+    height: 100%;
+    background-color: white;
+    border-radius: $data-card-border-radius;
+    border: none;
+}
+.data-modal {
+    background-color: white;
+    border-radius: $data-card-border-radius;
+}
+
+#data-header {
+    background-color: white;
+    border-top-left-radius: $data-card-border-radius;
+    border-top-right-radius: $data-card-border-radius;
+    border: 0;
+}
+
+#data-footer {
+    background-color: white;
+    border: 0;
+    text-align: right;
+    padding: 1rem;
+    padding-top: 0;
+    border-bottom-left-radius: $data-card-border-radius;
+    border-bottom-right-radius: $data-card-border-radius;
+
+    .row {
+        margin: 0;
+        justify-content: center;
+
+        @include media-breakpoint-up(md) {
+            justify-content: flex-end;
+        }
+    }
+}
+
+#id-query-text {
+    font-size: 20px;
+    align-self: center;
+    text-align: center;
+    @include media-breakpoint-up(sm) {
+        justify-content: flex-end;
+    }
+}
+
+#qr-code-container {
+    background-color: white;
+    padding-top: 100%;
+    position: relative;
+}
+
+#qr-code {
+    position: absolute;
+    left: 10%;
+    top: 10%;
+    width: 80%;
+    height: 80%;
+}
+
+.qt-input {
+    align-self: center;
+    border-radius: 0px;
+    border: 1px solid #7e7e7e;
+}
+
+.qt-input:focus {
+    border: none;
+    box-shadow: none !important;
+    // box-shadow: 3px 3px px $info;
+    outline: 3px solid $info;
+}
+
+.qt-input:hover:not(:focus) {
+    border: 1px solid $primary;
+}
+
+.btn-primary:focus {
+    border: 1px solid $info;
+    box-shadow: none !important;
+    // box-shadow: 3px 3px px $info;
+    outline: 4px solid $info !important;
+}
+
+.btn-outline-primary:focus {
+    border: 1px solid $info;
+    background-color: white !important;
+    color: $primary-dark !important;
+    font-weight: bold;
+    box-shadow: none !important;
+    // box-shadow: 3px 3px px $info;
+    outline: 4px solid $info !important;
+}
+
+.btn-outline-primary:active {
+    border: 1px solid white !important;
+    background-color: white !important;
+    color: $primary-dark !important;
+}
+
+.btn-outline-primary {
+    outline: 1px solid $primary;
+    color: $primary;
+    font-weight: bold;
+}
+
+.btn-outline-primary:hover:not(:focus) {
+    border: 1px solid $primary-dark;
+    outline: 1px solid $primary-dark;
+    box-shadow: none !important;
+    background-color: white;
+    color: $primary-dark;
+    font-weight: bold;
+    // box-shadow: 3px 3px px $info;
+    // outline: 4px solid $info!important;
+}
+
+.footer-font {
+    font-size: 11px !important;
+    color: white;
+}
+
+.btn {
+    font-size: 16px;
+    border-radius: 0px;
+}
+
+.landing-title {
+    font-size: 18px;
+    max-width: 480px;
+    width: 100%;
+}
+
+.landing-btn {
+    position: relative;
+    font-weight: bold;
+    color: white;
+    max-width: 480px;
+    height: 48px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0px;
+
+    @include media-breakpoint-down(xs) {
+        padding-right: 15%;
+    }
+}
+
+.landing-btn::after {
+    position: absolute;
+    content: "";
+    top: 13px;
+    right: 10%;
+    width: 0;
+    height: 0;
+    border: solid white;
+    border-width: 0 4px 4px 0;
+    display: inline-block;
+    padding: 7px;
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+}
+
+.center-content {
+    display: flex;
+    flex-flow: column;
+    flex: 1;
+    padding: 1rem;
+}
+
+.data-header-title {
+    color: #002f67;
+    font-size: 22px;
+}
+
+.data-label {
+    font-size: 16px;
+    line-height: 22px;
+}
+
+.input-label {
+    font-size: 16px;
+    @include media-breakpoint-up(md) {
+        font-size: 20px;
+    }
+}
+
+.jcc-xs-jcfs-sm {
+    display: flex;
+    justify-content: center;
+
+    @include media-breakpoint-up(sm) {
+        justify-content: flex-start;
+    }
+}
+
+.jcc-xs-jcfs-md {
+    display: flex;
+    justify-content: center;
+
+    @include media-breakpoint-up(md) {
+        justify-content: flex-start;
+    }
+}
+
+.jcc-xs-jcfe-md {
+    display: flex;
+    justify-content: center;
+
+    @include media-breakpoint-up(md) {
+        justify-content: flex-end;
+    }
+}
+
+.tac-xs-tal-md {
+    text-align: center;
+
+    @include media-breakpoint-up(md) {
+        text-align: left;
+    }
+}
+
+.react-date-picker__wrapper {
+    border: 0 !important;
+}
+
+.ckb-input {
+    position: inherit;
+    width: 20px;
+    height: 20px;
+    border-radius: $data-card-border-radius;
+}
+
+.rdb-input {
+    position: inherit;
+    width: 20px;
+    height: 20px;
+}
+
+.rdb-label {
+    height: 20px;
+    align-self: center;
+    padding-left: 0.5rem;
+}
+
+.form-flex {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.space-five {
+    padding: 5px;
+}
+
+.selection-placeholder {
+    color: $secondary;
+    option:not(:first-child) {
+        color: $dark;
+    }
+}
+
+.hidden {
+    display: none;
+}
+
+.header-title {
+    font-size: 18px;
+    margin-left: 16px;
+    display: flex;
+    align-self: center;
+}
+
+.bg-gray-1 {
+    height: 32px;
+    background-color: $gray-100;
+}
+
+.modal-content {
+    background-color: white;
+    border: 0px;
+    border-radius: $data-card-border-radius;
+}
