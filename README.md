@@ -34,10 +34,3 @@ EU疫苗護照概念式驗證開發前端。
 ## 啟動
 - Run `npm install`
 - Run `npm run start`
-
-## TODO
-- [x] 身份證字號變選填或可選身份證OR護照號碼OR健保卡
-- [x] 中文 (~~接踵~~接種)
-- [ ] 接種次數=>下拉式選單
-- [ ] 中文pdf
-- [ ] qrcode Decoder
