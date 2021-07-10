@@ -38,12 +38,18 @@ import {
     useGetVaccinMedicalData, useGetTestManufacturers, useGetTestResult, useGetTestType
 } from '../api';
 import { getValueSetDisplay, convertDateToOutputFormat } from '../misc/ShowCertificateData';
+
 // import pdfParams from '../pdf-settings.json';
 
 require('../assets/SCSS/fonts/arial-normal.js');
 require('../assets/SCSS/fonts/arial-bold.js');
 require('../assets/SCSS/fonts/arial-italic.js');
 require('../assets/SCSS/fonts/arial-bolditalic.js');
+
+require('../assets/SCSS/fonts/simhei-normal.js');
+require('../assets/SCSS/fonts/simhei-bold.js');
+require('../assets/SCSS/fonts/simhei-italic.js');
+require('../assets/SCSS/fonts/simhei-bolditalic.js');
 
 const mm2point = (mm: number): number => {
     return mm * 2.83465;
@@ -165,7 +171,7 @@ const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undef
     React.useEffect(() => {
         const _pdf = new jsPDF("p", "pt", "a4", true);
 
-        _pdf.setFont('arial', 'normal');
+        _pdf.setFont('simhei', 'normal');
         _pdf.setLineHeightFactor(1);
         _pdf.addPage();
 
@@ -328,7 +334,7 @@ const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undef
                 y += mm2point(40);
 
                 setTextColorBlue();
-                pdf.setFont('arial', 'bold');
+                pdf.setFont('simhei', 'bold');
                 pdf.setFontSize(params.headerFontSize);
 
                 let header = t('translation:pdfGreenCertificate');
@@ -377,7 +383,7 @@ const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undef
 
                 pdf.text(co, x, y, { align: 'center' });
                 setTextColorBlack();
-                pdf.setFont('arial', 'normal');
+                pdf.setFont('simhei', 'normal');
             }
 
             setFirstPageIsReady(true);
@@ -470,15 +476,15 @@ const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undef
 
                     setTextColorBlue();
                     pdf.setFontSize(params.fontSize14);
-                    pdf.setFont('arial', 'bold');
+                    pdf.setFont('simhei', 'bold');
                     let header = t('translation:pdfMemberPlaceholder');
                     header = pdf.splitTextToSize(header, lblLength);
                     pdf.text(header, x, y, { align: 'center', maxWidth: lblLength });
-                    pdf.setFont('arial', 'normal');
+                    pdf.setFont('simhei', 'normal');
 
                     y += mm2point(40) + params.lineHeight9;
                     setTextColorBlack();
-                    pdf.setFont('arial', 'normal');
+                    pdf.setFont('simhei', 'normal');
                     pdf.setFontSize(params.fontSize8);
                     let infotext = t('translation:pdfInfoText');
                     infotext = pdf.splitTextToSize(infotext, lblLength);
@@ -497,7 +503,7 @@ const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undef
                     pdf.text(infotext, x, y, { align: 'center', maxWidth: lblLength });
 
                     setTextColorBlack();
-                    pdf.setFont('arial', 'normal');
+                    pdf.setFont('simhei', 'normal');
                 }
             }
 
@@ -523,7 +529,7 @@ const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undef
 
             setTextColorBlue();
             pdf.setFontSize(params.fontSize14);
-            pdf.setFont('arial', 'bold');
+            pdf.setFont('simhei', 'bold');
             let header = t('translation:pdfMemberPlaceholder');
             header = pdf.splitTextToSize(header, lblLength);
             x = params.a6width * 2;
@@ -531,7 +537,7 @@ const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undef
 
             y -= mm2point(40);
             setTextColorBlack();
-            pdf.setFont('arial', 'normal');
+            pdf.setFont('simhei', 'normal');
             pdf.setFontSize(params.fontSize8);
             let infotext = t('translation:pdfInfoText');
             infotext = pdf.splitTextToSize(infotext, lblLength);
@@ -553,8 +559,9 @@ const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undef
             y -= params.lineHeight9;
             setTextColorBlack();
             pdf.setFontSize(params.fontSize9);
-            pdf.setFont('arial', 'italic');
-            infotext = t('translation:pdfFoldingInstruction');
+            pdf.setFont('simhei', 'italic');
+            //infotext = t('translation:pdfFoldingInstruction');
+            infotext = french.translation.pdfFoldingInstruction
             infotext = pdf.splitTextToSize(infotext, lblLength);
             y = centerSplittedText(infotext, x, y);
 
@@ -565,7 +572,7 @@ const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undef
             pdf.addImage(folding_instruction, x, y, imageWidth, imageHeight);
 
             setTextColorBlack();
-            pdf.setFont('arial', 'normal');
+            pdf.setFont('simhei', 'normal');
         }
     }
 
@@ -970,11 +977,11 @@ const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undef
     //     let result = 0;
 
     //     if (pdf) {
-    //         pdf.setFont('arial', 'bold');
+    //         pdf.setFont('simhei', 'bold');
     //         lblLeft = pdf.splitTextToSize(lblLeft, lblLength);
     //         pdf.text(lblLeft, x, y);
 
-    //         pdf.setFont('arial', 'normal');
+    //         pdf.setFont('simhei', 'normal');
 
     //         const lineheight = lblLeft.length > 2 ? params.lineHeight10 + 1 : params.lineHeight10;
     //         y += (lineheight * lblLeft.length) + params.space;
@@ -992,20 +999,20 @@ const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undef
         lineHeight = lineHeight ? lineHeight : params.lineHeight;
 
         if (pdf) {
-            pdf.setFont('arial', 'bold');
+            pdf.setFont('simhei', 'bold');
             lbl = pdf.splitTextToSize(lbl, lblLength);
             pdf.text(lbl, x, y);
 
             y += lineHeight * lbl.length;
 
-            pdf.setFont('arial', 'italic');
+            pdf.setFont('simhei', 'italic');
 
             const frenchText = pdf.splitTextToSize(lblFrench, lblLength);
             pdf.text(frenchText, x, y);
             y += lineHeight * frenchText.length;
 
             if (value) {
-                pdf.setFont('arial', 'normal');
+                pdf.setFont('simhei', 'normal');
                 const valueText = pdf.splitTextToSize(value, lblLength);
                 pdf.text(valueText, x, y);
 
@@ -1023,20 +1030,20 @@ const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undef
 
         if (value && pdf) {
             pdf.setFontSize(params.fontSize11)
-            pdf.setFont('arial', 'bold');
+            pdf.setFont('simhei', 'bold');
             lbl = pdf.splitTextToSize(lbl, lblLength);
             pdf.text(lbl, x, y);
             y += params.lineHeight12 * lbl.length;
 
             pdf.setFontSize(params.fontSize10)
-            pdf.setFont('arial', 'italic');
+            pdf.setFont('simhei', 'italic');
 
             const frenchText = pdf.splitTextToSize(lblFrench, lblLength);
             pdf.text(frenchText, x, y);
             y += params.lineHeight12 * frenchText.length;
 
             pdf.setFontSize(params.fontSize11);
-            pdf.setFont('arial', 'normal');
+            pdf.setFont('simhei', 'normal');
             setTextColorBlue()
             const valueText = pdf.splitTextToSize(value, lblLength);
             pdf.text(valueText, x, y);
@@ -1053,19 +1060,19 @@ const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undef
         lineHeight = lineHeight ? lineHeight : params.lineHeight;
 
         if (value && pdf) {
-            pdf.setFont('arial', 'bold');
+            pdf.setFont('simhei', 'bold');
             lbl = pdf.splitTextToSize(lbl, lblLength);
             y = leftSplittedTextRotated(lbl, x, y);
 
             if (isItalic) {
-                pdf.setFont('arial', 'italic');
+                pdf.setFont('simhei', 'italic');
             } else {
-                pdf.setFont('arial', 'normal');
+                pdf.setFont('simhei', 'normal');
             }
             const frenchText = pdf.splitTextToSize(lblFrench, lblLength);
             y = leftSplittedTextRotated(frenchText, x, y);
 
-            pdf.setFont('arial', 'normal');
+            pdf.setFont('simhei', 'normal');
             const valueText = pdf.splitTextToSize(value, lblLength);
             y = leftSplittedTextRotated(valueText, x, y);
 
@@ -1096,7 +1103,7 @@ const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undef
             let y = params.a6height;
             const lblLength = params.a6width - params.paddingLeft - params.paddingRight;
 
-            pdf.setFont('arial', 'bold');
+            pdf.setFont('simhei', 'bold');
             pdf.setFontSize(params.smallHeaderFontSize);
             setTextColorBlue();
 
@@ -1125,7 +1132,7 @@ const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undef
             let x = params.a6width
             let y = params.a6height;
 
-            pdf.setFont('arial', 'bold');
+            pdf.setFont('simhei', 'bold');
             pdf.setFontSize(params.smallHeaderFontSize);
             setTextColorBlue();
 

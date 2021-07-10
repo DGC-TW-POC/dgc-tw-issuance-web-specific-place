@@ -18,12 +18,10 @@ export class ReactShowPdfComponent implements OnInit, OnChanges, AfterViewInit {
     constructor() { }
     public rootId = 'react-wrapper-root';
     private hasViewLoaded = false;
-    ngOnInit(): void {
-        console.log(this.eudgc);
+    ngOnInit(): void {        
     }
 
     public ngOnChanges() {
-        console.log(this.eudgc);
         this.renderComponent();
     }
 

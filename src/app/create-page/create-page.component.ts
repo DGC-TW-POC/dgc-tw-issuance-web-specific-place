@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy, KeyValueChanges, KeyValueDiffer, KeyValueDiffers, ChangeDetectorRef } from '@angular/core';
 import { joiTypeMessage, setInputFilter, verifyTWIdentifier } from '../shared/common';
-import { vaccineMap, ICDCData, IDataInCDCData, dataTranslation , IVaccine } from './create-page-models';
+import { vaccineMap, agencyMap, ICDCData, dataTranslation , IVaccine } from './create-page-models';
 import * as _ from 'lodash';
 import * as joi from '@hapi/joi';
 import Swal from 'sweetalert2';
@@ -10,7 +10,8 @@ import { EUDCC1, VaccinationEntry } from '../shared/dgc-combined-schema.d';
 import genEDGCQR from '../shared/misc/edgcQRGenerator';
 import { CertResult } from '../shared/misc/edgcQRGenerator';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
-import { dataDecoder } from '../shared/misc/decoder/decoder';
+import { qrcodeDataDecoder } from '../shared/misc/decoder/decoder';
+
 
 //import * as $ from 'jquery';
 declare var $: any;
@@ -31,9 +32,9 @@ export class CreatePageComponent implements OnInit {
         AgencyCode: undefined,
         Data: undefined
     };
-    
+    public agencyItem = agencyMap;
     private dataSchema = {
-        AgencyCode: joi.string().min(10).max(10).required(),
+        AgencyCode: joi.required(),
         IdNo: joi.string().required(),
         Name: joi.string().required(),
         Birthday: joi.string().required(),
@@ -70,17 +71,51 @@ export class CreatePageComponent implements OnInit {
     public TAN;
 
     ngOnInit(): void {
-        //this.dataInCDCDataDiffer = this.differs.find(this.dataInCDCData).create();
+    }
+    handleShowPdf () :void {
+
+    }
+    ngAfterViewInit(): void {
+        //Called after ngAfterContentInit when the component's view has been initialized. Applies to components only.
+        //Add 'implements AfterViewInit' to the class.
+        $(".selector-vaccine-id").selectpicker();
+        $(".selector-vaccine-id").selectpicker('val', this.selectedVaccItem.id);
+        $(".selector-vaccine-dose-number").selectpicker();
+        $(".selector-vaccine-dose-number").selectpicker('val', 1);
+        $(".selector-agency").selectpicker();
+        $(".selector-agency").selectpicker('val' , `${this.agencyItem[0].name}-${this.agencyItem[0].code}`);
+        this.birthDateicker = $('#inputBirthDate').datepicker({
+            format: "yyyy-mm-dd", //設定格式為2019-04-01
+            autoclose: true,//選擇日期後就會自動關閉
+            language: 'zh-TW'//中文化
+        }).on('changeDate', (e) => {
+            this.data.Birthday = e.format();
+        }).on('hide', (e) => {
+            this.data.Birthday = e.format();
+        });
+        this.dateOfVaccinationDatePicker = $('#inputDateOfVaccination').datepicker({
+            format: "yyyy-mm-dd", //設定格式為2019-04-01
+            autoclose: true,//選擇日期後就會自動關閉
+            language: 'zh-TW',//中文化m
+            endDate: new Date()
+        }).on('changeDate', (e) => {
+            this.data.InocuDate = e.format();
+            //$("#inputDateOfVaccination").val(e.format());
+        }).on('hide', (e) => {
+            this.data.InocuDate = e.format();
+        });
+        this.dateOfVaccinationDatePicker.datepicker('setDate', 'now');
         let savedData = localStorage.getItem("dgcCreateData");
         if (savedData) {
             this.data = JSON.parse(savedData);
             let dataValidation = this.dataJoi.validate(this.data);
-            console.log(this.data);
             if (dataValidation.error) { 
                 this.clearData();
             } else {
                 this.selectedVaccItem = vaccineMap.find(v=> v.id == this.data.VaccID);
-                $("my-selector").val(this.selectedVaccItem.id);
+                $(".selector-vaccine-id").selectpicker("val" , this.selectedVaccItem.id);
+                $(".selector-vaccine-dose-number").selectpicker("val" , this.data.VaccDoses);
+                $(".selector-agency").selectpicker("val" , this.data.AgencyCode);
                 const vacc: VaccinationEntry = {
                     tg: "840539006",
                     vp: this.selectedVaccItem.type.id,
@@ -108,39 +143,6 @@ export class CreatePageComponent implements OnInit {
                 this.cdr.detectChanges();
             }
         }
-    }
-    handleShowPdf () :void {
-
-    }
-    ngAfterViewInit(): void {
-        //Called after ngAfterContentInit when the component's view has been initialized. Applies to components only.
-        //Add 'implements AfterViewInit' to the class.
-        $(".my-selector").selectpicker();
-        $(".my-selector").selectpicker('val', this.selectedVaccItem.id);
-        setInputFilter(document.getElementById("inputDoseNumber"), function (value) {
-            return /^\d*\.?\d*$/.test(value);
-        });
-        this.birthDateicker = $('#inputBirthDate').datepicker({
-            format: "yyyy-mm-dd", //設定格式為2019-04-01
-            autoclose: true,//選擇日期後就會自動關閉
-            language: 'zh-TW'//中文化
-        }).on('changeDate', (e) => {
-            this.data.Birthday = e.format();
-        }).on('hide', (e) => {
-            this.data.Birthday = e.format();
-        });
-        this.dateOfVaccinationDatePicker = $('#inputDateOfVaccination').datepicker({
-            format: "yyyy-mm-dd", //設定格式為2019-04-01
-            autoclose: true,//選擇日期後就會自動關閉
-            language: 'zh-TW',//中文化m
-            endDate: new Date()
-        }).on('changeDate', (e) => {
-            this.data.InocuDate = e.format();
-            //$("#inputDateOfVaccination").val(e.format());
-        }).on('hide', (e) => {
-            this.data.InocuDate = e.format();
-        });
-        this.dateOfVaccinationDatePicker.datepicker('setDate', 'now');
         this.cdr.detectChanges();
     }
 
@@ -264,7 +266,7 @@ export class CreatePageComponent implements OnInit {
     }
 
     onTestBtnClick() : void {
-        dataDecoder();
+        qrcodeDataDecoder(this.qrCode);
     }
 }
 

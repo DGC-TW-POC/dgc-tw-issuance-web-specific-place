@@ -4,9 +4,8 @@
         "secure": false
     } ,
     "/dgca-issuance-service" : {
-        "target" : "https://dgci.dicom.tw",
+        "target" : "https://dgc.issuance.xn--7-c56d.com/",
         "secure" : true,
-        "changeOrigin": true,
-        "auth" : "cylab:cy-lab"
+        "changeOrigin": true
     }
 }

@@ -77,3 +77,15 @@ export const dataTranslation = {
     VaccID: "疫苗代碼",
     VaccDoses: "接種次數"
 }
+
+//https://www1.nhi.gov.tw/QueryN/query3.aspx
+export const agencyMap = [
+    {
+        name : "醫療財團法人好心肝基金會好心肝診所" ,
+        code : "4001180029"
+    },
+    {
+        name : "臺北榮民總醫院",
+        code : "0601160016"
+    }
+]
