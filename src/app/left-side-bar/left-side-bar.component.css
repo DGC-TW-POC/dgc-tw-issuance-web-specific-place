@@ -96,7 +96,7 @@
   content: " ";
   background-size: 20px 20px;
   background-repeat: no-repeat;
-  background-image: url("../../assets/images/search.svg");
+  background-image: url("/assets/images/search.svg");
   float: left;
   padding-right: 1.75rem;
 }
@@ -109,7 +109,7 @@
   content: " ";
   background-size: 20px 20px;
   background-repeat: no-repeat;
-  background-image: url("../../assets/images/edit.svg");
+  background-image: url("/assets/images/edit.svg");
   float: left;
   padding-right: 1.75rem;
 }

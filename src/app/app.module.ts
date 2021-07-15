@@ -10,6 +10,7 @@ import { CreatePageComponent } from './create-page/create-page.component';
 import { QRCodeModule } from 'angularx-qrcode';
 import { FooterComponent } from './footer/footer.component';
 import { ReactShowPdfComponent } from './react-component/components/show-certificate.component-wrapper';
+import { SearchComponent } from './search/search.component';
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import { ReactShowPdfComponent } from './react-component/components/show-certifi
     ReactShowPdfComponent,
     LeftSideBarComponent,
     CreatePageComponent,
-    FooterComponent
+    FooterComponent,
+    SearchComponent
   ],
   imports: [
     BlockUIModule.forRoot(),

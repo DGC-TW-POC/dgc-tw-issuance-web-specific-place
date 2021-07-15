@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
 import { CreatePageComponent } from './create-page/create-page.component';
+import { SearchComponent } from './search/search.component';
 
 const routes: Routes = [
   /*{
@@ -20,6 +21,14 @@ const routes: Routes = [
       description: "創建"
     }
   } ,
+  {
+    path: "search" ,
+    component : SearchComponent ,
+    data : {
+      title: "接種資料查詢",
+      description: ""
+    }
+  },
   {
     "path" : "**",
     redirectTo : ''
