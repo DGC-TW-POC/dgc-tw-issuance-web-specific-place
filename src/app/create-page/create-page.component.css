@@ -1,6 +1,9 @@
-
 .btn-warmBlue {
-    color: #fff;
-    background-color: #4752C4;
-    border-color: #4752C4;
+  color: #fff;
+  background-color: #4752C4;
+  border-color: #4752C4;
+}
+
+.modal-lg {
+  max-width: 75%;
 }
