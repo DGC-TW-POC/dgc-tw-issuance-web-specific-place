@@ -1,14 +1,17 @@
 import { Component, OnInit, ChangeDetectionStrategy, KeyValueDiffers, ChangeDetectorRef, AfterViewInit, DoCheck } from '@angular/core';
-import { joiTypeMessage, verifyTWIdentifier } from '../shared/common';
-import { vaccineMap, agencyMap, ICDCData, dataTranslation, IVaccine } from './create-page-models';
+import { joiTypeMessage } from '../shared/common';
+import { agencyMap, ICDCData, dataTranslation, ICreationData } from './create-page-models';
+import { vaccineMap , IVaccine } from '../shared/models/vaccine';
+import { INHICardData } from '../shared/models/nhicard';
 import * as _ from 'lodash';
 import * as joi from '@hapi/joi';
 import Swal from 'sweetalert2';
 import { CreatePageService } from './create-page.service';
-import { EUDCC1, VaccinationEntry } from '../shared/dgc-combined-schema.d';
+import {  VaccinationEntry } from '../shared/dgc-combined-schema.d';
 import genEDGCQR from '../shared/misc/edgcQRGenerator';
 import { CertResult } from '../shared/misc/edgcQRGenerator';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { NHICardService } from '../shared/service/nhicard.service';
 
 
 //import * as $ from 'jquery';
@@ -27,24 +30,27 @@ export class CreatePageComponent implements OnInit, AfterViewInit, DoCheck {
     public cdcData: ICDCData;
     public agencyItem = agencyMap;
     private dataSchema;
-    public data;
+    public data : ICreationData;
     private dataJoi;
     private birthDateicker;
     private dateOfVaccinationDatePicker;
     public selectedVaccItem: IVaccine;
     public eudgc;
-    public qrCode: string;
+    public qrcode: string;
     public TAN: string;
-    constructor(private differs: KeyValueDiffers,
+    constructor(
+        private differs: KeyValueDiffers,
         private cdr: ChangeDetectorRef,
-        private createPageService: CreatePageService) {
+        private createPageService: CreatePageService,
+        private _NHICardService : NHICardService
+    ) {
         this.blockUI.start("Loading...");
         this.isInit = false;
     }
 
 
-    ngOnInit(): void {
-        this.qrCode = "1";
+    ngOnInit(): void {       
+        this.qrcode = "123";
         this.cdcData = {
             AgencyCode: undefined,
             Data: undefined
@@ -56,7 +62,8 @@ export class CreatePageComponent implements OnInit, AfterViewInit, DoCheck {
             Birthday: joi.string().required(),
             InocuDate: joi.string().required(),
             VaccID: joi.string().required(),
-            VaccDoses: joi.number().min(1).required()
+            VaccDoses: joi.number().min(1).required(),
+            qrcode: joi.string().default('0')
         };
         this.dataJoi = joi.object(this.dataSchema);
         this.data = {
@@ -66,7 +73,8 @@ export class CreatePageComponent implements OnInit, AfterViewInit, DoCheck {
             Birthday: undefined,
             InocuDate: undefined,
             VaccID: undefined,
-            VaccDoses: 1
+            VaccDoses: 1,
+            qrcode: "123"
         }
         this.selectedVaccItem = {
             "name": "",
@@ -156,7 +164,8 @@ export class CreatePageComponent implements OnInit, AfterViewInit, DoCheck {
             Birthday: undefined,
             InocuDate: undefined,
             VaccID: undefined,
-            VaccDoses: 1
+            VaccDoses: 1 ,
+            qrcode: "0"
         }
         this.init();
         localStorage.removeItem('dgcCreateData');
@@ -232,7 +241,8 @@ export class CreatePageComponent implements OnInit, AfterViewInit, DoCheck {
             genEDGCQR(this.eudgc)
                 .then((certResult: CertResult) => {
                     //console.log("qrcode: " + certResult.qrCode);
-                    this.qrCode = certResult.qrCode;
+                    this.qrcode = certResult.qrCode;
+                    this.data.qrcode = this.qrcode;
                     this.TAN = certResult.tan;
                     this.cdr.detectChanges();
                     this.blockUI.resetGlobal();
@@ -263,6 +273,17 @@ export class CreatePageComponent implements OnInit, AfterViewInit, DoCheck {
     onVaccItemChange(): void {
         this.selectedVaccItem = this.vaccineItem.find(v => v.id == this.data.VaccID);
     }
+
+    onReadNHICardClick() : void {
+        this._NHICardService.init();
+        this._NHICardService.getBasicDataInCard().then( (item: INHICardData)=> {
+            this.data.IdNo = item.idNo;
+            this.data.Name = item.name;
+            this.data.Birthday = item.birthDate;
+            this.cdr.detectChanges();
+        });
+    }
+
     ngDoCheck(): void {
         //Called every time that the input properties of a component or a directive are checked. Use it to extend change detection by performing a custom check.
         //Add 'implements DoCheck' to the class.

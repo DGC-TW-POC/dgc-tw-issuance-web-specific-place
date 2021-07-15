@@ -2,6 +2,11 @@
   <div class="row">
     <div class="col-lg-12 col-md-12 col-12">
       <div class="input-group input-group-sm mb-3">
+        <button class="btn btn-success" (click)="onReadNHICardClick();">Read NHI Card</button>
+      </div>
+    </div>
+    <div class="col-lg-12 col-md-12 col-12">
+      <div class="input-group input-group-sm mb-3">
         <div class="input-group-prepend">
           <span class="input-group-text font-weight-bold">接種機構醫事十碼章*</span>
         </div>
@@ -164,7 +169,7 @@
                 </div>
               </div>
               <div class="col-6 h-100">
-                <qrcode id="qr-code" [qrdata]="qrCode" [width]="'100%'" [errorCorrectionLevel]="'M'"
+                <qrcode id="qr-code" [qrdata]="qrcode " [width]="'100%'" [errorCorrectionLevel]="'M'"
                   [elementType]="'svg'" [cssClass]="'qrcode main-qrcode'">
                 </qrcode>
                 <br />
@@ -174,7 +179,7 @@
               </div>
             </div>
 
-            <qrcode [qrdata]="qrCode" [width]="281" [errorCorrectionLevel]="'M'" [elementType]="'canvas'"
+            <qrcode [qrdata]="qrcode " [width]="281" [errorCorrectionLevel]="'M'" [elementType]="'canvas'"
               class="qr-code-pdf-parent" style="display: none;"></qrcode>
 
           </div>
