@@ -95,7 +95,7 @@ interface IPageParameter {
 
 const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undefined, onIsInit: (isInit: boolean) => void, onIsReady: (isReady: boolean) => void) => {
     const { t } = useTranslation();
-    const french = i18n.getDataByLanguage('tw');
+    const taiwan = i18n.getDataByLanguage('tw');
 
     const vacMedsData = useGetVaccinMedicalData();
     const diseaseAgentsData = useGetDiseaseAgents();
@@ -319,7 +319,7 @@ const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undef
     }
 
     const prepareFirstPage = () => {
-        if (pdf && french && eudcc && co) {
+        if (pdf && taiwan && eudcc && co) {
             for (let page = 1; page < 3; page++) {
                 let x = 0;
                 let y = 0;
@@ -359,7 +359,7 @@ const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undef
 
                 y += params.headerLineHeight + mm2point(4);
 
-                header = french.translation.pdfGreenCertificate;
+                header = taiwan.translation.pdfGreenCertificate;
                 header = pdf.splitTextToSize(header, lblLength);
                 pdf.text(header, x, y, { align: 'center', maxWidth: lblLength });
 
@@ -391,7 +391,7 @@ const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undef
     }
 
     const prepareSecondPage = () => {
-        if (pdf && eudcc && ci && qrCodeCanvasElement && french) {
+        if (pdf && eudcc && ci && qrCodeCanvasElement && taiwan) {
 
             const space = mm2point(5);
 
@@ -434,17 +434,17 @@ const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undef
 
                 y = printHorizontalBlockPerson(x, y,
                     t('translation:pdfSurname'),
-                    french.translation.pdfSurname,
+                    taiwan.translation.pdfSurname,
                     (eudcc!.nam!.fnt + ' ') + (eudcc!.nam!.gnt ? eudcc!.nam!.gnt : ''));
 
                 y = printHorizontalBlockPerson(x, y,
                     t('translation:pdfDateOfBirth'),
-                    french.translation.pdfDateOfBirth,
+                    taiwan.translation.pdfDateOfBirth,
                     eudcc.dob);
 
                 y = printHorizontalBlockPerson(x, y,
                     t('translation:pdfCi'),
-                    french.translation.pdfCi,
+                    taiwan.translation.pdfCi,
                     ci);
             }
 
@@ -561,7 +561,7 @@ const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undef
             pdf.setFontSize(params.fontSize9);
             pdf.setFont('simhei', 'italic');
             //infotext = t('translation:pdfFoldingInstruction');
-            infotext = french.translation.pdfFoldingInstruction
+            infotext = taiwan.translation.pdfFoldingInstruction
             infotext = pdf.splitTextToSize(infotext, lblLength);
             y = centerSplittedText(infotext, x, y);
 
@@ -577,7 +577,7 @@ const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undef
     }
 
     const prepareFourthPageVaccination = () => {
-        if (pdf && vaccinationSet && french) {
+        if (pdf && vaccinationSet && taiwan) {
 
             for (let page = 1; page < 3; page++) {
 
@@ -589,7 +589,7 @@ const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undef
 
                     const lineHeight = params.lineHeight10;
 
-                    let y = printCertificateHeader(t('translation:pdfHeaderVaccination'), french.translation.pdfHeaderVaccination, params.paddingTop);
+                    let y = printCertificateHeader(t('translation:pdfHeaderVaccination'), taiwan.translation.pdfHeaderVaccination, params.paddingTop);
                     y += params.space;
 
                     //For the labels on the left side
@@ -599,49 +599,49 @@ const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undef
 
                     y = printVerticalBlock(xLeft, y,
                         t('translation:pdfDisease'),
-                        french.translation.pdfDisease,
+                        taiwan.translation.pdfDisease,
                         getValueSetDisplay(vaccinationSet.tg, diseaseAgentsData),
                         lineHeight, true);
 
                     y = printVerticalBlock(xLeft, y,
                         t('translation:pdfVaccineProphylaxis'),
-                        french.translation.pdfVaccineProphylaxis,
+                        taiwan.translation.pdfVaccineProphylaxis,
                         getValueSetDisplay(vaccinationSet.vp, vaccines),
                         lineHeight, true);
 
                     y = printVerticalBlock(xLeft, y,
                         t('translation:pdfVaccineMedicalProduct'),
-                        french.translation.pdfVaccineMedicalProduct,
+                        taiwan.translation.pdfVaccineMedicalProduct,
                         getValueSetDisplay(vaccinationSet.mp, vacMedsData),
                         lineHeight, true);
 
                     y = printVerticalBlock(xLeft, y,
                         t('translation:pdfVaccineManufacturer'),
-                        french.translation.pdfVaccineManufacturer,
+                        taiwan.translation.pdfVaccineManufacturer,
                         getValueSetDisplay(vaccinationSet.ma, vaccineManufacturers),
                         lineHeight, true);
 
                     y = printVerticalBlock(xLeft, y,
                         t('translation:pdfNumberOfDoses'),
-                        french.translation.pdfNumberOfDoses,
+                        taiwan.translation.pdfNumberOfDoses,
                         vaccinationSet.dn.toString() + ' / ' + vaccinationSet.sd.toString(),
                         lineHeight, true);
 
                     y = printVerticalBlock(xLeft, y,
                         t('translation:pdfDateOfVaccination'),
-                        french.translation.pdfDateOfVaccination,
+                        taiwan.translation.pdfDateOfVaccination,
                         vaccinationSet.dt,
                         lineHeight, true);
 
                     y = printVerticalBlock(xLeft, y,
                         t('translation:pdfMemberStateOfVaccination'),
-                        french.translation.pdfMemberStateOfVaccination,
+                        taiwan.translation.pdfMemberStateOfVaccination,
                         vaccinationSet.co,
                         lineHeight, true);
 
                     printVerticalBlock(xLeft, y,
                         t('translation:pdfCertificateIssuer'),
-                        french.translation.pdfCertificateIssuer,
+                        taiwan.translation.pdfCertificateIssuer,
                         vaccinationSet.is,
                         lineHeight, true);
                 }
@@ -652,10 +652,10 @@ const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undef
     }
 
     const prepareFourthPageVaccinationRotated = () => {
-        if (pdf && vaccinationSet && french) {
+        if (pdf && vaccinationSet && taiwan) {
             const lineHeight = params.lineHeight10;
 
-            let y = printCertificateHeaderRotated(t('translation:pdfHeaderVaccination'), french.translation.pdfHeaderVaccination, params.paddingTop);
+            let y = printCertificateHeaderRotated(t('translation:pdfHeaderVaccination'), taiwan.translation.pdfHeaderVaccination, params.paddingTop);
             y += params.space;
 
             //For the labels on the left side
@@ -665,56 +665,56 @@ const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undef
 
             y = printVerticalBlockRotated(xLeft, y,
                 t('translation:pdfDisease'),
-                french.translation.pdfDisease,
+                taiwan.translation.pdfDisease,
                 getValueSetDisplay(vaccinationSet.tg, diseaseAgentsData),
                 lineHeight, true);
 
             y = printVerticalBlockRotated(xLeft, y,
                 t('translation:pdfVaccineProphylaxis'),
-                french.translation.pdfVaccineProphylaxis,
+                taiwan.translation.pdfVaccineProphylaxis,
                 getValueSetDisplay(vaccinationSet.vp, vaccines),
                 lineHeight, true);
 
             y = printVerticalBlockRotated(xLeft, y,
                 t('translation:pdfVaccineMedicalProduct'),
-                french.translation.pdfVaccineMedicalProduct,
+                taiwan.translation.pdfVaccineMedicalProduct,
                 getValueSetDisplay(vaccinationSet.mp, vacMedsData),
                 lineHeight, true);
 
             y = printVerticalBlockRotated(xLeft, y,
                 t('translation:pdfVaccineManufacturer'),
-                french.translation.pdfVaccineManufacturer,
+                taiwan.translation.pdfVaccineManufacturer,
                 getValueSetDisplay(vaccinationSet.ma, vaccineManufacturers),
                 lineHeight, true);
 
             y = printVerticalBlockRotated(xLeft, y,
                 t('translation:pdfNumberOfDoses'),
-                french.translation.pdfNumberOfDoses,
+                taiwan.translation.pdfNumberOfDoses,
                 vaccinationSet.dn.toString() + ' / ' + vaccinationSet.sd.toString(),
                 lineHeight, true);
 
             y = printVerticalBlockRotated(xLeft, y,
                 t('translation:pdfDateOfVaccination'),
-                french.translation.pdfDateOfVaccination,
+                taiwan.translation.pdfDateOfVaccination,
                 vaccinationSet.dt,
                 lineHeight, true);
 
             y = printVerticalBlockRotated(xLeft, y,
                 t('translation:pdfMemberStateOfVaccination'),
-                french.translation.pdfMemberStateOfVaccination,
+                taiwan.translation.pdfMemberStateOfVaccination,
                 vaccinationSet.co,
                 lineHeight, true);
 
             printVerticalBlockRotated(xLeft, y,
                 t('translation:pdfCertificateIssuer'),
-                french.translation.pdfCertificateIssuer,
+                taiwan.translation.pdfCertificateIssuer,
                 vaccinationSet.is,
                 lineHeight, true);
         }
     }
 
     const prepareFourthPageTest = () => {
-        if (pdf && testSet && french) {
+        if (pdf && testSet && taiwan) {
             for (let page = 1; page < 3; page++) {
 
                 pdf.setPage(page);
@@ -725,7 +725,7 @@ const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undef
 
                     const lineHeight = params.lineHeight10;
 
-                    let y = printCertificateHeader(t('translation:pdfHeaderTest'), french.translation.pdfHeaderTest);
+                    let y = printCertificateHeader(t('translation:pdfHeaderTest'), taiwan.translation.pdfHeaderTest);
 
                     let x = params.a6width + params.paddingInnerLeft;
 
@@ -733,55 +733,55 @@ const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undef
 
                     y = printVerticalBlock(x, y,
                         t('translation:pdfDisease'),
-                        french.translation.pdfDisease,
+                        taiwan.translation.pdfDisease,
                         getValueSetDisplay(testSet.tg, diseaseAgentsData),
                         lineHeight, true);
 
                     y = printVerticalBlock(x, y,
                         t('translation:pdfTypeOfTest'),
-                        french.translation.pdfTypeOfTest,
+                        taiwan.translation.pdfTypeOfTest,
                         getValueSetDisplay(testSet.tt, testTypeValueSet),
                         lineHeight, true);
 
                     y = printVerticalBlock(x, y,
                         t('translation:pdfTestName'),
-                        french.translation.pdfTestName,
+                        taiwan.translation.pdfTestName,
                         testSet.nm,
                         lineHeight, true);
 
                     y = printVerticalBlock(x, y,
                         t('translation:pdfTestManufacturer'),
-                        french.translation.pdfTestManufacturer,
+                        taiwan.translation.pdfTestManufacturer,
                         getValueSetDisplay(testSet.ma, testManufacturersValueSet),
                         lineHeight, true);
 
                     y = printVerticalBlock(x, y,
                         t('translation:pdfDateSampleCollection'),
-                        french.translation.pdfDateSampleCollection,
+                        taiwan.translation.pdfDateSampleCollection,
                         convertDateToOutputFormat(testSet.sc),
                         lineHeight, true);
 
                     y = printVerticalBlock(x, y,
                         t('translation:pdfTestResult'),
-                        french.translation.pdfTestResult,
+                        taiwan.translation.pdfTestResult,
                         getValueSetDisplay(testSet.tr, testResultValueSet),
                         lineHeight, true);
 
                     y = printVerticalBlock(x, y,
                         t('translation:pdfTestingCentre'),
-                        french.translation.pdfTestingCentre,
+                        taiwan.translation.pdfTestingCentre,
                         testSet.tc,
                         lineHeight, true);
 
                     y = printVerticalBlock(x, y,
                         t('translation:pdfStateOfVaccination'),
-                        french.translation.pdfStateOfVaccination,
+                        taiwan.translation.pdfStateOfVaccination,
                         testSet.co,
                         lineHeight, true);
 
                     printVerticalBlock(x, y,
                         t('translation:pdfCertificateIssuer'),
-                        french.translation.pdfCertificateIssuer,
+                        taiwan.translation.pdfCertificateIssuer,
                         testSet.is,
                         lineHeight, true);
 
@@ -793,10 +793,10 @@ const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undef
     }
 
     const prepareFourthPageTestRotated = () => {
-        if (pdf && testSet && french) {
+        if (pdf && testSet && taiwan) {
             const lineHeight = params.lineHeight10;
 
-            let y = printCertificateHeaderRotated(t('translation:pdfHeaderTest'), french.translation.pdfHeaderTest);
+            let y = printCertificateHeaderRotated(t('translation:pdfHeaderTest'), taiwan.translation.pdfHeaderTest);
 
             let x = params.a6width - params.paddingInnerLeft;
 
@@ -804,62 +804,62 @@ const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undef
 
             y = printVerticalBlockRotated(x, y,
                 t('translation:pdfDisease'),
-                french.translation.pdfDisease,
+                taiwan.translation.pdfDisease,
                 getValueSetDisplay(testSet.tg, diseaseAgentsData),
                 lineHeight, true);
 
             y = printVerticalBlockRotated(x, y,
                 t('translation:pdfTypeOfTest'),
-                french.translation.pdfTypeOfTest,
+                taiwan.translation.pdfTypeOfTest,
                 getValueSetDisplay(testSet.tt, testTypeValueSet),
                 lineHeight, true);
 
             y = printVerticalBlockRotated(x, y,
                 t('translation:pdfTestName'),
-                french.translation.pdfTestName,
+                taiwan.translation.pdfTestName,
                 testSet.nm ? testSet.nm : ' ',
                 lineHeight, true);
 
             y = printVerticalBlockRotated(x, y,
                 t('translation:pdfTestManufacturer'),
-                french.translation.pdfTestManufacturer,
+                taiwan.translation.pdfTestManufacturer,
                 getValueSetDisplay(testSet.ma, testManufacturersValueSet),
                 lineHeight, true);
 
             y = printVerticalBlockRotated(x, y,
                 t('translation:pdfDateSampleCollection'),
-                french.translation.pdfDateSampleCollection,
+                taiwan.translation.pdfDateSampleCollection,
                 convertDateToOutputFormat(testSet.sc),
                 lineHeight, true);
 
             y = printVerticalBlockRotated(x, y,
                 t('translation:pdfTestResult'),
-                french.translation.pdfTestResult,
+                taiwan.translation.pdfTestResult,
                 getValueSetDisplay(testSet.tr, testResultValueSet),
                 lineHeight, true);
 
             y = printVerticalBlockRotated(x, y,
                 t('translation:pdfTestingCentre'),
-                french.translation.pdfTestingCentre,
+                taiwan.translation.pdfTestingCentre,
                 testSet.tc,
                 lineHeight, true);
 
             y = printVerticalBlockRotated(x, y,
                 t('translation:pdfStateOfVaccination'),
-                french.translation.pdfStateOfVaccination,
+                taiwan.translation.pdfStateOfVaccination,
                 testSet.co,
                 lineHeight, true);
 
             printVerticalBlockRotated(x, y,
                 t('translation:pdfCertificateIssuer'),
-                french.translation.pdfCertificateIssuer,
+                taiwan.translation.pdfCertificateIssuer,
                 testSet.is,
                 lineHeight, true);
         }
     }
 
     const prepareFourthPageRecovery = () => {
-        if (pdf && recoverySet && french) {
+        if (pdf && recoverySet && taiwan) {
 
             for (let page = 1; page < 3; page++) {
 
@@ -871,7 +871,7 @@ const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undef
                 else {
                     const lineHeight = params.lineHeight10;
 
-                    let y = printCertificateHeader(t('translation:pdfHeaderRecovery'), french.translation.pdfHeaderRecovery, params.paddingTop);
+                    let y = printCertificateHeader(t('translation:pdfHeaderRecovery'), taiwan.translation.pdfHeaderRecovery, params.paddingTop);
                     y += params.smallHeaderLineHeight + params.space;
 
                     //For the labels on the left side
@@ -881,36 +881,36 @@ const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undef
 
                     y = printVerticalBlock(xLeft, y,
                         t('translation:pdfDisease'),
-                        french.translation.pdfDisease,
+                        taiwan.translation.pdfDisease,
                         getValueSetDisplay(recoverySet.tg, diseaseAgentsData),
                         lineHeight, true);
 
                     y = printVerticalBlock(xLeft, y,
                         t('translation:pdfDatePositiveTestResult'),
-                        french.translation.pdfDatePositiveTestResult,
+                        taiwan.translation.pdfDatePositiveTestResult,
                         recoverySet.fr);
 
                     y = printVerticalBlock(xLeft, y,
                         t('translation:pdfStateOfTest'),
-                        french.translation.pdfStateOfTest,
+                        taiwan.translation.pdfStateOfTest,
                         recoverySet.co,
                         lineHeight, true);
 
                     y = printVerticalBlock(xLeft, y,
                         t('translation:pdfCertificateIssuer'),
-                        french.translation.pdfCertificateIssuer,
+                        taiwan.translation.pdfCertificateIssuer,
                         recoverySet.is,
                         lineHeight, true);
 
                     y = printVerticalBlock(xLeft, y,
                         t('translation:pdfValidFrom'),
-                        french.translation.pdfValidFrom,
+                        taiwan.translation.pdfValidFrom,
                         recoverySet.df,
                         lineHeight, true);
 
                     printVerticalBlock(xLeft, y,
                         t('translation:pdfValidTo'),
-                        french.translation.pdfValidTo,
+                        taiwan.translation.pdfValidTo,
                         recoverySet.du,
                         lineHeight, true);
 
@@ -924,11 +924,11 @@ const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undef
      * Rotated Fourth page is the new first page on the A4.
      */
     const prepareFourthPageRecoveryRotated = () => {
-        if (pdf && recoverySet && french) {
+        if (pdf && recoverySet && taiwan) {
 
             const lineHeight = params.lineHeight10;
 
-            let y = printCertificateHeaderRotated(t('translation:pdfHeaderRecovery'), french.translation.pdfHeaderRecovery, params.paddingTop);
+            let y = printCertificateHeaderRotated(t('translation:pdfHeaderRecovery'), taiwan.translation.pdfHeaderRecovery, params.paddingTop);
             y -= params.smallHeaderLineHeight - params.space;
 
             //For the labels on the left side
@@ -938,42 +938,42 @@ const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undef
 
             y = printVerticalBlockRotated(xLeft, y,
                 t('translation:pdfDisease'),
-                french.translation.pdfDisease,
+                taiwan.translation.pdfDisease,
                 getValueSetDisplay(recoverySet.tg, diseaseAgentsData),
                 lineHeight, true);
 
             y = printVerticalBlockRotated(xLeft, y,
                 t('translation:pdfDatePositiveTestResult'),
-                french.translation.pdfDatePositiveTestResult,
+                taiwan.translation.pdfDatePositiveTestResult,
                 recoverySet.fr);
 
             y = printVerticalBlockRotated(xLeft, y,
                 t('translation:pdfStateOfTest'),
-                french.translation.pdfStateOfTest,
+                taiwan.translation.pdfStateOfTest,
                 recoverySet.co,
                 lineHeight, true);
 
             y = printVerticalBlockRotated(xLeft, y,
                 t('translation:pdfCertificateIssuer'),
-                french.translation.pdfCertificateIssuer,
+                taiwan.translation.pdfCertificateIssuer,
                 recoverySet.is,
                 lineHeight, true);
 
             y = printVerticalBlockRotated(xLeft, y,
                 t('translation:pdfValidFrom'),
-                french.translation.pdfValidFrom,
+                taiwan.translation.pdfValidFrom,
                 recoverySet.df,
                 lineHeight, true);
 
             printVerticalBlockRotated(xLeft, y,
                 t('translation:pdfValidTo'),
-                french.translation.pdfValidTo,
+                taiwan.translation.pdfValidTo,
                 recoverySet.du,
                 lineHeight, true);
         }
     }
 
-    // const printSplittedLine = (x: number, y: number, lblLeft: any, lblLeftFrench: any): number => {
+    // const printSplittedLine = (x: number, y: number, lblLeft: any, lblLefttaiwan: any): number => {
     //     let result = 0;
 
     //     if (pdf) {
@@ -985,16 +985,16 @@ const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undef
 
     //         const lineheight = lblLeft.length > 2 ? params.lineHeight10 + 1 : params.lineHeight10;
     //         y += (lineheight * lblLeft.length) + params.space;
-    //         lblLeftFrench = pdf.splitTextToSize(lblLeftFrench, lblLength);
-    //         pdf.text(lblLeftFrench, x, y);
+    //         lblLefttaiwan = pdf.splitTextToSize(lblLefttaiwan, lblLength);
+    //         pdf.text(lblLefttaiwan, x, y);
 
-    //         result = y + params.lineHeight10 * lblLeftFrench.length;
+    //         result = y + params.lineHeight10 * lblLefttaiwan.length;
     //     }
 
     //     return result;
     // }
 
-    const printVerticalBlock = (x: number, y: number, lbl: any, lblFrench: any, value?: string, lineHeight?: number, isItalic?: boolean): number => {
+    const printVerticalBlock = (x: number, y: number, lbl: any, lbltaiwan: any, value?: string, lineHeight?: number, isItalic?: boolean): number => {
         let result = y;
         lineHeight = lineHeight ? lineHeight : params.lineHeight;
 
@@ -1007,9 +1007,9 @@ const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undef
 
             pdf.setFont('simhei', 'italic');
 
-            const frenchText = pdf.splitTextToSize(lblFrench, lblLength);
-            pdf.text(frenchText, x, y);
-            y += lineHeight * frenchText.length;
+            const taiwanText = pdf.splitTextToSize(lbltaiwan, lblLength);
+            pdf.text(taiwanText, x, y);
+            y += lineHeight * taiwanText.length;
 
             if (value) {
                 pdf.setFont('simhei', 'normal');
@@ -1025,7 +1025,7 @@ const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undef
         return result;
     }
 
-    const printHorizontalBlockPerson = (x: number, y: number, lbl: any, lblFrench: any, value?: string): number => {
+    const printHorizontalBlockPerson = (x: number, y: number, lbl: any, lbltaiwan: any, value?: string): number => {
         let result = y;
 
         if (value && pdf) {
@@ -1038,9 +1038,9 @@ const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undef
             pdf.setFontSize(params.fontSize10)
             pdf.setFont('simhei', 'italic');
 
-            const frenchText = pdf.splitTextToSize(lblFrench, lblLength);
-            pdf.text(frenchText, x, y);
-            y += params.lineHeight12 * frenchText.length;
+            const taiwanText = pdf.splitTextToSize(lbltaiwan, lblLength);
+            pdf.text(taiwanText, x, y);
+            y += params.lineHeight12 * taiwanText.length;
 
             pdf.setFontSize(params.fontSize11);
             pdf.setFont('simhei', 'normal');
@@ -1055,7 +1055,7 @@ const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undef
         return result;
     }
 
-    const printVerticalBlockRotated = (x: number, y: number, lbl: any, lblFrench: any, value?: string, lineHeight?: number, isItalic?: boolean): number => {
+    const printVerticalBlockRotated = (x: number, y: number, lbl: any, lbltaiwan: any, value?: string, lineHeight?: number, isItalic?: boolean): number => {
         let result = y;
         lineHeight = lineHeight ? lineHeight : params.lineHeight;
 
@@ -1069,8 +1069,8 @@ const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undef
             } else {
                 pdf.setFont('simhei', 'normal');
             }
-            const frenchText = pdf.splitTextToSize(lblFrench, lblLength);
-            y = leftSplittedTextRotated(frenchText, x, y);
+            const taiwanText = pdf.splitTextToSize(lbltaiwan, lblLength);
+            y = leftSplittedTextRotated(taiwanText, x, y);
 
             pdf.setFont('simhei', 'normal');
             const valueText = pdf.splitTextToSize(value, lblLength);
@@ -1082,20 +1082,20 @@ const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undef
         return result;
     }
 
-    // const printBlock = (xLeft: number, xRight: number, y: number, lblLeft: any, lblLeftFrench: any, value?: string, space?: number): number => {
+    // const printBlock = (xLeft: number, xRight: number, y: number, lblLeft: any, lblLefttaiwan: any, value?: string, space?: number): number => {
     //     let result = y;
 
     //     if (pdf && value) {
     //         const valueText = pdf.splitTextToSize(value, lblLength);
     //         pdf.text(valueText, xRight, y);
-    //         result = printSplittedLine(xLeft, y, lblLeft, lblLeftFrench);
+    //         result = printSplittedLine(xLeft, y, lblLeft, lblLefttaiwan);
     //         result += space ? space : params.lineHeight10 + params.space;
     //     }
 
     //     return result;
     // }
 
-    const printCertificateHeader = (header: any, frenchHeader: string, paddingTop?: number): number => {
+    const printCertificateHeader = (header: any, taiwanHeader: string, paddingTop?: number): number => {
         let result = 0;
 
         if (pdf) {
@@ -1115,17 +1115,17 @@ const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undef
 
             y += params.smallHeaderLineHeight + header.length;
             pdf.setFontSize(params.fontSize14);
-            frenchHeader = pdf.splitTextToSize(frenchHeader, params.a6width);
-            pdf.text(frenchHeader, x, y, { align: 'center', maxWidth: lblLength });
+            taiwanHeader = pdf.splitTextToSize(taiwanHeader, params.a6width);
+            pdf.text(taiwanHeader, x, y, { align: 'center', maxWidth: lblLength });
             setTextColorBlack();
 
-            result = y + params.smallHeaderLineHeight * frenchHeader.length;
+            result = y + params.smallHeaderLineHeight * taiwanHeader.length;
         }
 
         return result;
     }
 
-    const printCertificateHeaderRotated = (header: any, frenchHeader: string, paddingTop?: number): number => {
+    const printCertificateHeaderRotated = (header: any, taiwanHeader: string, paddingTop?: number): number => {
         let result = 0;
 
         if (pdf) {
@@ -1144,11 +1144,11 @@ const usePdfGenerator = (qrCodeCanvasElementProp: any, eudccProp: EUDCC1 | undef
 
             y -= params.smallHeaderLineHeight;
             pdf.setFontSize(params.fontSize14);
-            frenchHeader = pdf.splitTextToSize(frenchHeader, lblLength);
-            centerSplittedText(frenchHeader, x, y);
+            taiwanHeader = pdf.splitTextToSize(taiwanHeader, lblLength);
+            centerSplittedText(taiwanHeader, x, y);
             setTextColorBlack();
 
-            result = y - params.smallHeaderLineHeight * frenchHeader.length;
+            result = y - params.smallHeaderLineHeight * taiwanHeader.length;
         }
 
         return result;
