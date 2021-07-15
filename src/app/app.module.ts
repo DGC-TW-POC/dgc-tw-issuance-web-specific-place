@@ -6,7 +6,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { LeftSideBarComponent } from './left-side-bar/left-side-bar.component'
 import { BlockUIModule } from 'ng-block-ui';
-import { SearchPageComponent } from './search-page/search-page.component';
 import { CreatePageComponent } from './create-page/create-page.component';
 import { QRCodeModule } from 'angularx-qrcode';
 import { FooterComponent } from './footer/footer.component';
@@ -18,7 +17,6 @@ import { ReactShowPdfComponent } from './react-component/components/show-certifi
     AppComponent,
     ReactShowPdfComponent,
     LeftSideBarComponent,
-    SearchPageComponent,
     CreatePageComponent,
     FooterComponent
   ],

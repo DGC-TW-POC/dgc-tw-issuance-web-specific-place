@@ -27,7 +27,7 @@
   
   .sidebar .nav-link {
     font-weight: 500;
-    color: whitesmoke;
+    color: #007bff;
   }
   
   .sidebar .nav-link .feather {
@@ -36,7 +36,11 @@
   }
   
   .sidebar .nav-link.active {
-    color: #007bff;
+    color: whitesmoke;
+    background-color: #464646;
+    border-radius: 10px;
+    padding: 5px;
+    margin: .5rem;
   }
   
   .sidebar .nav-link:hover .feather,
