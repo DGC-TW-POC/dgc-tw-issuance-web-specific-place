@@ -27,8 +27,8 @@ export class NHICardService {
                     resolve(NHICardBasicDataObj);
                 }
                 checkTime++;
-                if (checkTime >=5) {
-                    alert("健保卡資料讀取失敗");
+                if (checkTime >=3) {
+                    clearInterval(checkInterval)
                     reject(new Error("NHI Card value not found"));
                 }
             } , 500)
