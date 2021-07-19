@@ -32,6 +32,6 @@
   } ,
   "include": [
     "src" ,
-    "src/assets/scripts/**"
+    "src/assets/scripts"
   ]
 }

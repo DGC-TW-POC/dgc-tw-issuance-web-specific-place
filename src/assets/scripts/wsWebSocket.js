@@ -33,6 +33,12 @@ function browserDetect() {
     }
 }
 
+function initHidValue () {
+    document.getElementById("hidBasic").value = "";
+    document.getElementById("hidVersion").value = "";
+    document.getElementById("hidRandom").value = "";
+    document.getElementById("hidSign").value = "";
+}
 function onLoadweb() {
 
     document.getElementById("hidBasic").value = "";
@@ -148,6 +154,7 @@ function onMessage(evt) {
         else {
             alert('error');
             alert(GetErrorH_SignMessage(sSign));
+            initHidValue();
             window.event.returnValue = false;
         }
     } else if (message.substring(0, 4) == 'log:') {//log:
@@ -159,6 +166,7 @@ function onMessage(evt) {
         sConnect = message.slice("connected:".length);
         alert(sConnect);
     } else {
+        initHidValue();
         alert(GetErrorH_SignMessage(message));
     }
 }
