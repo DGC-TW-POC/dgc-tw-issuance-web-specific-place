@@ -1,8 +1,9 @@
 <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4" [hidden]="!isInit">
+  <h1>COVID-19 疫苗接種QR Code建立</h1>
   <div class="row">
     <div class="col-lg-12 col-md-12 col-12">
       <div class="input-group input-group-sm mb-3">
-        <button class="btn btn-success" (click)="onReadNHICardClick();">Read NHI Card</button>
+        <button class="btn btn-success btn-block" (click)="onReadNHICardClick();">讀取健保卡資料</button>
       </div>
     </div>
     <div class="col-lg-12 col-md-12 col-12">
@@ -12,7 +13,7 @@
         </div>
         <select class="selectpicker selector-agency form-control form-control-sm" data-live-search="true"
           [(ngModel)]="data.AgencyCode">
-          <option *ngFor="let item of agencyItem" [attr.value]="item.name + '-' + item.code">{{item.name}}</option>
+          <option *ngFor="let item of agencyItem" [attr.value]="item.code">{{item.name}}</option>
         </select>
         <div class="invalid-feedback d-block" *ngIf="!joiTest('AgencyCode')">請選擇接種機構</div>
       </div>
@@ -44,6 +45,13 @@
         </div>
         <input class="form-control form-control-sm datepicker" [ngClass]="displayFieldCss('Birthday')"
           id="inputBirthDate" [(ngModel)]="data.Birthday" required placeholder="請選擇生日或自行輸入(年年年年-月月-日日)">
+      </div>
+    </div>
+    <div class="col-12">
+      <div class="input-group input-group-sm mb-3">
+        <button class="btn btn-success btn-block" (click)="onGetDataFromBackendClick();">
+          取得接種疫苗資料
+        </button>
       </div>
     </div>
   </div>
@@ -192,4 +200,32 @@
     </div>
   </div>
 
+  <!-- search result selection Modal -->
+  <div class="modal fade" id="modelSearchResultSelection" tabindex="-1" role="dialog" aria-labelledby="modelTitleSearchResultSelection" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">匯入接種疫苗資料</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div *ngIf="searchResult.length>0">
+            <p>身份證字號: {{searchResult[0].person.IdNo}}</p>
+            <p>姓名: {{searchResult[0].person.Name}}</p>
+            <p>生日: {{searchResult[0].person.Birthday}}</p>
+          </div>
+          <div class="card btn btn-outline-info mb-4" *ngFor="let item of searchResult; index as i;">
+            <div class="card-body pointer-event" (click)="backendDataToCreationData(item)">
+              <h5 class="crad-title text-center">第{{i+1}}劑</h5>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </main>

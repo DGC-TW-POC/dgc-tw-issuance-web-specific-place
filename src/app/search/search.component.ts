@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, AfterViewInit } from '@angular/core';
-import { ICreationData } from '../create-page/create-page-models';
+import { IVaccineCDCData, IVaccineCDCDataSearchParameters } from './search.models';
 import { vaccineMap } from '../shared/models/vaccine';
 import { SearchService } from './search.service';
 import * as joi from '@hapi/joi';
@@ -18,7 +18,7 @@ export class SearchComponent implements OnInit,AfterViewInit {
     @BlockUI() blockUI : NgBlockUI;
     public isInit: boolean;
     public vaccineItem = vaccineMap;
-    public data: Array<ICreationData>;
+    public data: Array<IVaccineCDCData>;
     public selectedVaccItem = {
         name: '',
         id: '',
@@ -30,20 +30,26 @@ export class SearchComponent implements OnInit,AfterViewInit {
     private searchParamsSchema = {
         AgencyCode: joi.string().min(10).max(10).allow(''),
         IdNo: joi.string().allow(''),
-        Name: joi.string().allow(''),
-        Birthday: joi.string().allow(''),
+        person: joi.object({
+            IdNo: joi.string().allow(''),
+            Name: joi.string().allow(''),
+            Birthday: joi.string().allow('')
+        }),
         InocuDate: joi.string().allow(''),
         VaccID: joi.string().allow(''),
         VaccDoses: joi.number().empty('')
     };
-    public searchParams: ICreationData = {
+    public searchParams: IVaccineCDCDataSearchParameters = {
         AgencyCode: '',
         IdNo: '',
-        Name: '',
-        Birthday: '',
         VaccID: '',
         VaccDoses: 0,
-        InocuDate: ''
+        InocuDate: '',
+        person: {
+            IdNo: "" ,
+            Name: "" ,
+            Birthday: ""
+        }
     };
     private birthDateicker;
     private dateOfVaccinationDatePicker;
@@ -64,15 +70,18 @@ export class SearchComponent implements OnInit,AfterViewInit {
         // Called after ngAfterContentInit when the component's view has been initialized. Applies to components only.
         // Add 'implements AfterViewInit' to the class.
         $('#selector-vaccine-id').selectpicker();
+        $('#selector-vaccine-id').selectpicker('val' , '');
         $('#selector-vaccine-dose-number').selectpicker();
+        $('#selector-vaccine-dose-number').selectpicker('val' , 0);
+        $('.selectpicker').selectpicker();
         this.birthDateicker = $('#inputBirthDate').datepicker({
             format: 'yyyy-mm-dd', // 設定格式為2019-04-01
             autoclose: true, // 選擇日期後就會自動關閉
             language: 'zh-TW'// 中文化
         }).on('changeDate', (e) => {
-            this.searchParams.Birthday = e.format();
+            this.searchParams.person.Birthday = e.format();
         }).on('hide', (e) => {
-            this.searchParams.Birthday = e.format();
+            this.searchParams.person.Birthday = e.format();
         });
         this.dateOfVaccinationDatePicker = $('#inputDateOfVaccination').datepicker({
             format: 'yyyy-mm-dd', // 設定格式為2019-04-01
@@ -110,10 +119,21 @@ export class SearchComponent implements OnInit,AfterViewInit {
                         })
                     }
                     for (let item of this.data) {
-                        console.log(Buffer.from(item["qrcode"]["data"], "utf-8").toString("utf8"));
+                        console.log(item["qrcode"]);
+                        if (item.qrcode) {
+                            console.log(Buffer.from(item.qrcode.data, "utf-8").toString("utf8"));
+                        }
                     }
 
                     this.cdr.detectChanges();
+                },
+                err => {
+                    console.error(err);
+                    Swal.fire({
+                        titleText: "錯誤" ,
+                        text: "伺服器發生錯誤" ,
+                        icon: 'error'
+                    })
                 }
             );
         }
@@ -125,12 +145,20 @@ export class SearchComponent implements OnInit,AfterViewInit {
     }
 
     onReadNHICardClick() : void {
+        this.blockUI.start("讀取健保卡資料中...");
         this._NHICardService.init();
         this._NHICardService.getBasicDataInCard().then( (item: INHICardData)=> {
             this.searchParams.IdNo = item.idNo;
-            this.searchParams.Name = item.name;
-            this.searchParams.Birthday = item.birthDate;
+            this.searchParams.person.Name = item.name;
+            this.searchParams.person.Birthday = item.birthDate;
             this.cdr.detectChanges();
+            this.blockUI.stop();
+        }).catch(err => {
+            this.searchParams.IdNo = "";
+            this.searchParams.person.Name = "";
+            this.searchParams.person.Birthday = "";
+            this.cdr.detectChanges();
+            this.blockUI.stop();
         });
     }
 

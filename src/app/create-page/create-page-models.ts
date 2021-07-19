@@ -13,6 +13,7 @@ export interface IDataInCDCData {
 }
 
 export interface ICreationData {
+    NHIId?: string;
     AgencyCode: string;
     IdNo: string;
     Name: string;
@@ -21,11 +22,12 @@ export interface ICreationData {
     VaccID: string;
     VaccDoses: number;
     qrcode?: string;
+    dgci_hash?: string;
 }
 
 export const dataTranslation = {
     AgencyCode : "接種機構醫事十碼章",
-    IdNo: "身份證字號",
+    IdNo: "身份證字號/護照號碼/居留證號碼",
     Name: "姓名",
     Birthday: "生日",
     InocuDate: "接種日期",

@@ -1,18 +1,20 @@
-import { Component, OnInit, ChangeDetectionStrategy, KeyValueDiffers, ChangeDetectorRef, AfterViewInit, DoCheck } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, KeyValueDiffers, ChangeDetectorRef, AfterViewInit, DoCheck, OnDestroy } from '@angular/core';
 import { joiTypeMessage } from '../shared/common';
 import { agencyMap, ICDCData, dataTranslation, ICreationData } from './create-page-models';
-import { vaccineMap , IVaccine } from '../shared/models/vaccine';
+import { vaccineMap, IVaccine } from '../shared/models/vaccine';
 import { INHICardData } from '../shared/models/nhicard';
 import * as _ from 'lodash';
 import * as joi from '@hapi/joi';
 import Swal from 'sweetalert2';
 import { CreatePageService } from './create-page.service';
-import {  VaccinationEntry } from '../shared/dgc-combined-schema.d';
+import { VaccinationEntry } from '../shared/dgc-combined-schema.d';
 import genEDGCQR from '../shared/misc/edgcQRGenerator';
 import { CertResult } from '../shared/misc/edgcQRGenerator';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { NHICardService } from '../shared/service/nhicard.service';
-
+import { VaccineService } from '../shared/service/vaccine.service';
+import { SearchService } from '../search/search.service';
+import { IVaccineCDCData, IVaccineCDCDataSearchParameters } from '../search/search.models';
 
 //import * as $ from 'jquery';
 declare var $: any;
@@ -22,15 +24,17 @@ declare var $: any;
     styleUrls: ['./create-page.component.css'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CreatePageComponent implements OnInit, AfterViewInit, DoCheck {
+export class CreatePageComponent implements OnInit, AfterViewInit, DoCheck, OnDestroy {
     @BlockUI() blockUI: NgBlockUI;
     public isInit: boolean;
     public isShowQrcode: boolean;
     public vaccineItem = vaccineMap;
-    public cdcData: ICDCData;
     public agencyItem = agencyMap;
+    public cdcData: ICDCData;
+    private searchParams: IVaccineCDCDataSearchParameters;
+    public searchResult: Array<IVaccineCDCData>;
     private dataSchema;
-    public data : ICreationData;
+    public data: ICreationData;
     private dataJoi;
     private birthDateicker;
     private dateOfVaccinationDatePicker;
@@ -42,14 +46,29 @@ export class CreatePageComponent implements OnInit, AfterViewInit, DoCheck {
         private differs: KeyValueDiffers,
         private cdr: ChangeDetectorRef,
         private createPageService: CreatePageService,
-        private _NHICardService : NHICardService
+        private _NHICardService: NHICardService,
+        private vaccineService: VaccineService,
+        private searchService: SearchService
     ) {
         this.blockUI.start("Loading...");
         this.isInit = false;
     }
 
 
-    ngOnInit(): void {       
+    ngOnInit(): void {
+        this.searchParams = {
+            AgencyCode: '',
+            IdNo: '',
+            VaccID: '',
+            VaccDoses: 0,
+            InocuDate: '',
+            person: {
+                IdNo: "",
+                Name: "",
+                Birthday: ""
+            }
+        };
+        this.searchResult = [];
         this.qrcode = "123";
         this.cdcData = {
             AgencyCode: undefined,
@@ -63,7 +82,8 @@ export class CreatePageComponent implements OnInit, AfterViewInit, DoCheck {
             InocuDate: joi.string().required(),
             VaccID: joi.string().required(),
             VaccDoses: joi.number().min(1).required(),
-            qrcode: joi.string().default('0')
+            qrcode: joi.string().default('0'),
+            dgci_hash: joi.string().default('0')
         };
         this.dataJoi = joi.object(this.dataSchema);
         this.data = {
@@ -136,7 +156,6 @@ export class CreatePageComponent implements OnInit, AfterViewInit, DoCheck {
         let savedData = localStorage.getItem("dgcCreateData");
         if (savedData) {
             this.data = JSON.parse(savedData);
-
             let dataValidation = this.dataJoi.validate(this.data);
             if (dataValidation.error) {
                 this.clearData();
@@ -164,16 +183,79 @@ export class CreatePageComponent implements OnInit, AfterViewInit, DoCheck {
             Birthday: undefined,
             InocuDate: undefined,
             VaccID: undefined,
-            VaccDoses: 1 ,
+            VaccDoses: 1,
             qrcode: "0"
         }
         this.init();
         localStorage.removeItem('dgcCreateData');
+        Swal.fire({
+            icon: "info",
+            text: "清除成功"
+        });
     }
 
+    backendDataToCreationData(data: IVaccineCDCData): void {
+        this.data.AgencyCode = data.AgencyCode;
+        this.data.Name = data.person.Name;
+        this.data.IdNo = data.IdNo;
+        this.data.Birthday = data.person.Birthday;
+        this.data.InocuDate = data.InocuDate;
+        this.data.VaccDoses = data.VaccDoses;
+        this.data.VaccID = data.VaccID;
+        this.onVaccItemChange();
+        this.cdr.detectChanges();
+        $(".selector-vaccine-id").selectpicker("val", this.selectedVaccItem.id);
+        $(".selector-vaccine-dose-number").selectpicker("val", this.data.VaccDoses);
+        $(".selector-agency").selectpicker("val", this.data.AgencyCode);
+        $("#modelSearchResultSelection").modal("hide");
+    }
+
+    onGetDataFromBackendClick(): void {
+        this.blockUI.start("取得資料中...");
+        let cloneData = _.cloneDeep(this.data);
+        this.searchParams.IdNo = cloneData.IdNo;
+        this.searchParams.person.Name = cloneData.Name;
+        this.searchParams.person.Birthday = cloneData.Birthday;
+        if (this.searchParams.IdNo || this.searchParams.person.Name || this.searchParams.person.Birthday) {
+            this.searchService.getCDCData(this.searchParams).subscribe(
+                res => {
+                    try {
+                        this.searchResult = [];
+                        if ((res as Array<any>).length == 0 ) return;
+                        let firstItem: IVaccineCDCData = (res as Array<any>).pop();
+                        this.searchResult.push(firstItem);
+                        let secondItem = _.find(res, { 'IdNo': firstItem.IdNo });
+                        if (secondItem) this.searchResult.push(secondItem);
+                        res = undefined;
+                        this.searchResult = _.sortBy(this.searchResult , 'VaccDoses');
+                        this.cdr.detectChanges();
+                        $("#modelSearchResultSelection").modal("show");
+                        this.blockUI.stop();
+                    } catch (e) {
+                        console.error(e);
+                        this.blockUI.stop();
+                    }
+                },
+                err => {
+                    console.error(err);
+                    this.searchResult = [];
+                    this.blockUI.stop();
+                }
+            )
+        } else {
+            this.blockUI.stop();
+            Swal.fire({
+                title: '請你不要這樣做',
+                text: '請輸入至少一個條件(姓名、身份證字號/護照號碼/居留證號碼、生日)',
+                icon: 'warning'
+            });
+        }
+    }
     onCreationClick(): void {
         this.blockUI.start("建立中...");
-        let dataValidation = this.dataJoi.validate(this.data);
+        let dataValidation = this.dataJoi.validate(this.data, {
+            allowUnknown: true
+        });
         if (dataValidation.error) {
             this.blockUI.resetGlobal();
             let detail = dataValidation.error.details.pop();
@@ -200,8 +282,11 @@ export class CreatePageComponent implements OnInit, AfterViewInit, DoCheck {
                         backdrop: 'static',
                         keyboard: false
                     });
-                    console.log(this.eudgc);
-                    localStorage.setItem("dgcCreateData", JSON.stringify(this.data));
+                    //console.log(this.eudgc);
+                    let saveDgcCreateData = _.cloneDeep(this.data);
+                    saveDgcCreateData.dgci_hash = "0";
+                    saveDgcCreateData.qrcode = "0";
+                    localStorage.setItem("dgcCreateData", JSON.stringify(saveDgcCreateData));
                 },
                 err => {
                     this.blockUI.resetGlobal();
@@ -243,14 +328,15 @@ export class CreatePageComponent implements OnInit, AfterViewInit, DoCheck {
                     //console.log("qrcode: " + certResult.qrCode);
                     this.qrcode = certResult.qrCode;
                     this.data.qrcode = this.qrcode;
+                    this.data.dgci_hash = this.vaccineService.computeDgciHash(vacc.ci);
                     this.TAN = certResult.tan;
                     this.cdr.detectChanges();
-                    this.blockUI.resetGlobal();
+                    this.blockUI.stop();
                     return resolve(true);
                 })
                 .catch(error => {
                     console.error(error);
-                    this.blockUI.resetGlobal();
+                    this.blockUI.stop();
                     return reject(false);
                 });
         });
@@ -274,13 +360,23 @@ export class CreatePageComponent implements OnInit, AfterViewInit, DoCheck {
         this.selectedVaccItem = this.vaccineItem.find(v => v.id == this.data.VaccID);
     }
 
-    onReadNHICardClick() : void {
+    onReadNHICardClick(): void {
+        this.blockUI.start("讀取健保卡資料中...");
         this._NHICardService.init();
-        this._NHICardService.getBasicDataInCard().then( (item: INHICardData)=> {
+        this._NHICardService.getBasicDataInCard().then((item: INHICardData) => {
+            this.data.NHIId = item.cardId;
             this.data.IdNo = item.idNo;
             this.data.Name = item.name;
             this.data.Birthday = item.birthDate;
             this.cdr.detectChanges();
+            this.blockUI.stop();
+        }).catch(err => {
+            this.data.NHIId = "";
+            this.data.IdNo = "";
+            this.data.Name = "";
+            this.data.Birthday = "";
+            this.cdr.detectChanges();
+            this.blockUI.stop();
         });
     }
 
@@ -292,6 +388,10 @@ export class CreatePageComponent implements OnInit, AfterViewInit, DoCheck {
             $(this).attr("id", "qr-code-pdf");
         });
     }
-
+    ngOnDestroy(): void {
+        //Called once, before the instance is destroyed.
+        //Add 'implements OnDestroy' to the class.
+        this.blockUI.resetGlobal();
+    }
 }
 

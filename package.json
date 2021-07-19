@@ -36,6 +36,7 @@
     "i18next-resource-store-loader": "^0.1.2",
     "io-ts": "^2.2.16",
     "jquery": "^3.6.0",
+    "js-base64": "^3.6.1",
     "jspdf": "^2.3.1",
     "jsrsasign": "^10.3.0",
     "lodash": "^4.17.21",
