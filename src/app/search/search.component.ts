@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, AfterViewInit } from '@angular/core';
-import { IVaccineCDCData, IVaccineCDCDataSearchParameters } from './search.models';
+import { IVaccineCDCData, IVaccineCDCDataSearchParameters, IVaccineSearchResult } from './search.models';
 import { vaccineMap } from '../shared/models/vaccine';
 import { SearchService } from './search.service';
 import * as joi from '@hapi/joi';
@@ -7,6 +7,7 @@ import Swal from 'sweetalert2';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { INHICardData } from '../shared/models/nhicard';
 import { NHICardService } from '../shared/service/nhicard.service';
+import { PaginationInstance } from 'ngx-pagination'
 declare var $:any;
 @Component({
     selector: 'app-search',
@@ -18,7 +19,7 @@ export class SearchComponent implements OnInit,AfterViewInit {
     @BlockUI() blockUI : NgBlockUI;
     public isInit: boolean;
     public vaccineItem = vaccineMap;
-    public data: Array<IVaccineCDCData>;
+    public data: IVaccineSearchResult;
     public selectedVaccItem = {
         name: '',
         id: '',
@@ -27,6 +28,13 @@ export class SearchComponent implements OnInit,AfterViewInit {
             id: ''
         }
     };
+    public paginationConfig: PaginationInstance = {
+        id: 'searchResultPagination',
+        itemsPerPage: 10,
+        currentPage: 1 ,
+        totalItems : 0
+    };
+    public page: number =1;
     private searchParamsSchema = {
         AgencyCode: joi.string().min(10).max(10).allow(''),
         IdNo: joi.string().allow(''),
@@ -37,7 +45,8 @@ export class SearchComponent implements OnInit,AfterViewInit {
         }),
         InocuDate: joi.string().allow(''),
         VaccID: joi.string().allow(''),
-        VaccDoses: joi.number().empty('')
+        VaccDoses: joi.number().empty(''),
+        page: joi.number().default(1)
     };
     public searchParams: IVaccineCDCDataSearchParameters = {
         AgencyCode: '',
@@ -49,7 +58,8 @@ export class SearchComponent implements OnInit,AfterViewInit {
             IdNo: "" ,
             Name: "" ,
             Birthday: ""
-        }
+        },
+        page: 1
     };
     private birthDateicker;
     private dateOfVaccinationDatePicker;
@@ -61,9 +71,16 @@ export class SearchComponent implements OnInit,AfterViewInit {
         this.isInit = false;
         this.blockUI.start("Lodaing...");
     }
-
+    getPage(iPage: number) : void {
+        console.log(iPage);
+        this.searchParams.page = iPage;
+        this.searchCDCData();
+    }
     ngOnInit(): void {
-
+        this.data = {
+            count :0 , 
+            rows: []
+        }
     }
 
     ngAfterViewInit(): void {
@@ -111,20 +128,21 @@ export class SearchComponent implements OnInit,AfterViewInit {
             this.searchService.getCDCData(validation.value).subscribe(
                 res => {
                     this.data = res;
-                    if (this.data.length == 0) {
+                    if (this.data.rows.length == 0) {
                         Swal.fire({
                             titleText: "information" ,
                             text: "查無資料" ,
                             icon: 'info'
                         })
                     }
-                    for (let item of this.data) {
+                    for (let item of this.data.rows) {
                         console.log(item["qrcode"]);
                         if (item.qrcode) {
                             console.log(Buffer.from(item.qrcode.data, "utf-8").toString("utf8"));
                         }
                     }
-
+                    this.paginationConfig.totalItems = this.data.count ;
+                    this.paginationConfig.currentPage = this.searchParams.page;
                     this.cdr.detectChanges();
                 },
                 err => {

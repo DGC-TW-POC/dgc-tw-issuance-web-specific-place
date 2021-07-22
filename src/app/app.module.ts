@@ -6,6 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { LeftSideBarComponent } from './left-side-bar/left-side-bar.component'
 import { BlockUIModule } from 'ng-block-ui';
+import { NgxPaginationModule } from 'ngx-pagination';
 import { CreatePageComponent } from './create-page/create-page.component';
 import { QRCodeModule } from 'angularx-qrcode';
 import { FooterComponent } from './footer/footer.component';
@@ -29,7 +30,8 @@ import { SearchComponent } from './search/search.component';
     ReactiveFormsModule,
     AppRoutingModule,
     HttpClientModule,
-    QRCodeModule
+    QRCodeModule,
+    NgxPaginationModule
   ],
   providers: [],
   bootstrap: [AppComponent]

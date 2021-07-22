@@ -13,7 +13,7 @@ export class SearchService {
   ) { }
   getCDCData(params): Observable<any> {
     //https://stackoverflow.com/a/45725439
-    let query = Base64.encode(JSON.stringify(params));
+    let query = Base64.encode(JSON.stringify(params) , true);
     let p = new HttpParams();
     p = p.set("qs",  query);
     return this.http.get<Array<ICreationData>>('/api/vaccine/CDCData' , {

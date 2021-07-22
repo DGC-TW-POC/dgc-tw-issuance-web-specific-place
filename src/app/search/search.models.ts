@@ -4,6 +4,11 @@ interface IQrcode {
     data: any;
 }
 
+export interface IVaccineSearchResult {
+    count : number;
+    rows : Array<IVaccineCDCData>
+} 
+
 export interface IVaccineCDCData {
     id?: number;
     AgencyCode: string;
@@ -24,4 +29,5 @@ export interface IVaccineCDCDataSearchParameters {
     VaccID: string;
     VaccDoses: number;
     person : IPerson;
+    page?: number;
 }
