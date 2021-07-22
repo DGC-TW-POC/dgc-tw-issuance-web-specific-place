@@ -23,6 +23,9 @@ export interface ICreationData {
     VaccDoses: number;
     qrcode?: string;
     dgci_hash?: string;
+    LastName: string;
+    FirstName: string;
+    [key:string]: any;
 }
 
 export const dataTranslation = {
@@ -32,7 +35,9 @@ export const dataTranslation = {
     Birthday: "生日",
     InocuDate: "接種日期",
     VaccID: "疫苗代碼",
-    VaccDoses: "接種次數"
+    VaccDoses: "接種次數" ,
+    LastName: "LastName(英文姓氏)",
+    FirstName: "FirstName(英文名字)"
 }
 
 //https://www1.nhi.gov.tw/QueryN/query3.aspx

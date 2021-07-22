@@ -1,5 +1,5 @@
-import { Component, OnInit, ChangeDetectionStrategy, KeyValueDiffers, ChangeDetectorRef, AfterViewInit, DoCheck, OnDestroy } from '@angular/core';
-import { joiTypeMessage } from '../shared/common';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, AfterViewInit, DoCheck, OnDestroy } from '@angular/core';
+import { joiTypeMessage, setInputFilter } from '../shared/common';
 import { agencyMap, ICDCData, dataTranslation, ICreationData } from './create-page-models';
 import { vaccineMap, IVaccine } from '../shared/models/vaccine';
 import { INHICardData } from '../shared/models/nhicard';
@@ -14,8 +14,9 @@ import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { NHICardService } from '../shared/service/nhicard.service';
 import { VaccineService } from '../shared/service/vaccine.service';
 import { SearchService } from '../search/search.service';
-import { IVaccineCDCData, IVaccineCDCDataSearchParameters } from '../search/search.models';
-
+import { IVaccineCDCData, IVaccineCDCDataSearchParameters, IVaccineSearchResult } from '../search/search.models';
+import romanize from 'romanize-names';
+import { normalizeName } from 'normalize-text';
 //import * as $ from 'jquery';
 declare var $: any;
 @Component({
@@ -26,13 +27,14 @@ declare var $: any;
 })
 export class CreatePageComponent implements OnInit, AfterViewInit, DoCheck, OnDestroy {
     @BlockUI() blockUI: NgBlockUI;
+    //#region variable
     public isInit: boolean;
     public isShowQrcode: boolean;
     public vaccineItem = vaccineMap;
     public agencyItem = agencyMap;
     public cdcData: ICDCData;
     private searchParams: IVaccineCDCDataSearchParameters;
-    public searchResult: Array<IVaccineCDCData>;
+    public searchResult: IVaccineSearchResult;
     private dataSchema;
     public data: ICreationData;
     private dataJoi;
@@ -42,8 +44,8 @@ export class CreatePageComponent implements OnInit, AfterViewInit, DoCheck, OnDe
     public eudgc;
     public qrcode: string;
     public TAN: string;
+    //#endregion 
     constructor(
-        private differs: KeyValueDiffers,
         private cdr: ChangeDetectorRef,
         private createPageService: CreatePageService,
         private _NHICardService: NHICardService,
@@ -68,7 +70,10 @@ export class CreatePageComponent implements OnInit, AfterViewInit, DoCheck, OnDe
                 Birthday: ""
             }
         };
-        this.searchResult = [];
+        this.searchResult = {
+            count : 0 ,
+            rows: []
+        };
         this.qrcode = "123";
         this.cdcData = {
             AgencyCode: undefined,
@@ -78,6 +83,8 @@ export class CreatePageComponent implements OnInit, AfterViewInit, DoCheck, OnDe
             AgencyCode: joi.required(),
             IdNo: joi.string().required(),
             Name: joi.string().required(),
+            LastName: joi.string().regex(/^[A-Z<]*$/).required(),
+            FirstName : joi.string().regex(/^[A-Z<]*$/).required(),
             Birthday: joi.string().required(),
             InocuDate: joi.string().required(),
             VaccID: joi.string().required(),
@@ -94,7 +101,9 @@ export class CreatePageComponent implements OnInit, AfterViewInit, DoCheck, OnDe
             InocuDate: undefined,
             VaccID: undefined,
             VaccDoses: 1,
-            qrcode: "123"
+            qrcode: "123" ,
+            LastName : '',
+            FirstName: ''
         }
         this.selectedVaccItem = {
             "name": "",
@@ -152,6 +161,10 @@ export class CreatePageComponent implements OnInit, AfterViewInit, DoCheck, OnDe
     }
     ngAfterViewInit(): void {
         this.init();
+        setInputFilter(document.getElementById("inputFirstName") , function(v) {
+            //v = v.toUpperCase()
+            return /^[A-Z< ]+$/gm.test(v)
+        });
         //取得localStorage儲存的上一次接種資料
         let savedData = localStorage.getItem("dgcCreateData");
         if (savedData) {
@@ -176,16 +189,7 @@ export class CreatePageComponent implements OnInit, AfterViewInit, DoCheck, OnDe
     }
 
     clearData(): void {
-        this.data = {
-            AgencyCode: undefined,
-            IdNo: undefined,
-            Name: undefined,
-            Birthday: undefined,
-            InocuDate: undefined,
-            VaccID: undefined,
-            VaccDoses: 1,
-            qrcode: "0"
-        }
+        this.ngOnInit();
         this.init();
         localStorage.removeItem('dgcCreateData');
         Swal.fire({
@@ -195,13 +199,15 @@ export class CreatePageComponent implements OnInit, AfterViewInit, DoCheck, OnDe
     }
 
     backendDataToCreationData(data: IVaccineCDCData): void {
-        this.data.AgencyCode = data.AgencyCode;
+        let agency = this.agencyItem.find(v=> v.code == data.AgencyCode);
+        this.data.AgencyCode = `${agency.name}-${agency.code}`;
         this.data.Name = data.person.Name;
         this.data.IdNo = data.IdNo;
         this.data.Birthday = data.person.Birthday;
         this.data.InocuDate = data.InocuDate;
         this.data.VaccDoses = data.VaccDoses;
         this.data.VaccID = data.VaccID;
+        this.onBtnRomanizeNameClick();
         this.onVaccItemChange();
         this.cdr.detectChanges();
         $(".selector-vaccine-id").selectpicker("val", this.selectedVaccItem.id);
@@ -220,14 +226,24 @@ export class CreatePageComponent implements OnInit, AfterViewInit, DoCheck, OnDe
             this.searchService.getCDCData(this.searchParams).subscribe(
                 res => {
                     try {
-                        this.searchResult = [];
-                        if ((res as Array<any>).length == 0 ) return;
-                        let firstItem: IVaccineCDCData = (res as Array<any>).pop();
-                        this.searchResult.push(firstItem);
-                        let secondItem = _.find(res, { 'IdNo': firstItem.IdNo });
-                        if (secondItem) this.searchResult.push(secondItem);
+                        this.searchResult = {
+                            count: 0,
+                            rows: []
+                        };
+                        if ((res["rows"] as Array<any>).length == 0 ) {
+                            this.blockUI.stop();
+                            Swal.fire({
+                                icon: 'info',
+                                text : '查無資料'
+                            })
+                            return;
+                        }
+                        let firstItem: IVaccineCDCData = (res as Array<any>)["rows"].pop();
+                        this.searchResult.rows.push(firstItem);
+                        let secondItem = _.find(res["rows"], { 'IdNo': firstItem.IdNo });
+                        if (secondItem) this.searchResult.rows.push(secondItem);
                         res = undefined;
-                        this.searchResult = _.sortBy(this.searchResult , 'VaccDoses');
+                        this.searchResult.rows = _.sortBy(this.searchResult.rows , 'VaccDoses');
                         this.cdr.detectChanges();
                         $("#modelSearchResultSelection").modal("show");
                         this.blockUI.stop();
@@ -238,8 +254,12 @@ export class CreatePageComponent implements OnInit, AfterViewInit, DoCheck, OnDe
                 },
                 err => {
                     console.error(err);
-                    this.searchResult = [];
+                    this.searchResult = {
+                        count: 0,
+                        rows: []
+                    };
                     this.blockUI.stop();
+                    Swal.fire('Oops...', "伺服器發生錯誤", 'error');
                 }
             )
         } else {
@@ -282,6 +302,7 @@ export class CreatePageComponent implements OnInit, AfterViewInit, DoCheck, OnDe
                         backdrop: 'static',
                         keyboard: false
                     });
+                    $("#modalQrCode").modal('show');
                     //console.log(this.eudgc);
                     let saveDgcCreateData = _.cloneDeep(this.data);
                     saveDgcCreateData.dgci_hash = "0";
@@ -315,10 +336,10 @@ export class CreatePageComponent implements OnInit, AfterViewInit, DoCheck, OnDe
             this.eudgc = {
                 ver: '1.3.0',
                 nam: {
-                    fn: undefined,
-                    fnt: this.data.Name!,
-                    gn: undefined,
-                    gnt: undefined
+                    fn: normalizeName(this.data.LastName.replace(/</gm , " ")),
+                    fnt: `${this.data.LastName}<${this.data.Name!}`,
+                    gn: normalizeName(this.data.FirstName.replace(/</gm , " ")),
+                    gnt: this.data.FirstName
                 },
                 dob: this.data.Birthday,
                 v: [vacc]
@@ -342,6 +363,29 @@ export class CreatePageComponent implements OnInit, AfterViewInit, DoCheck, OnDe
         });
     }
 
+    onBtnRomanizeNameClick(translateSystem:string="HANYU") : void {
+        try {
+            let romanizeName:string = romanize(this.data.Name,translateSystem);
+            let [firstName, lastName] = romanizeName.split(" ");
+            firstName = firstName.replace(/-/gm , "<").toUpperCase();
+            lastName = lastName.replace(/-/gm , "<").toUpperCase();
+            this.data.FirstName = firstName;
+            this.data.LastName = lastName;
+            this.cdr.detectChanges();
+        } catch(e) {
+            console.error(e);
+            Swal.fire({
+                text: "抱歉，此名字目前自動翻譯不支援。" , 
+                icon: "error"
+            });
+        }
+        
+    }
+
+    enNameFilter(event) : void {
+        event.target.value = event.target.value.replace(/[ ]/, "<").toUpperCase();
+        this.data.FirstName = event.target.value;
+    }
     joiTest(field: string) {
         let validation: joi.ValidationResult = this.dataSchema[field].validate(this.data[field]);
         if (validation.error) {
@@ -375,8 +419,15 @@ export class CreatePageComponent implements OnInit, AfterViewInit, DoCheck, OnDe
             this.data.IdNo = "";
             this.data.Name = "";
             this.data.Birthday = "";
+            this.data.LastName = "";
+            this.data.FirstName = "";
             this.cdr.detectChanges();
             this.blockUI.stop();
+            let errorMessage = (window as any)['nhca'] ? (window as any)['nhca'].errorMessage: "未安裝健保卡元件"
+            Swal.fire({
+                icon:'error',
+                text: errorMessage
+            })
         });
     }
 
