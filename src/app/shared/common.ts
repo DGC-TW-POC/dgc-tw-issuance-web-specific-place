@@ -7,10 +7,15 @@ export const setInputFilter = function (textbox, inputFilter) {
         this.oldSelectionStart = this.selectionStart;
         this.oldSelectionEnd = this.selectionEnd;
       } else if (this.hasOwnProperty("oldValue")) {
-        this.value = this.oldValue;
-        this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
+        if (this.value) {
+          this.value = this.oldValue;
+          this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
+        } else {
+          this.oldValue = "";
+        }
       } else {
         this.value = "";
+        this.oldValue = "";
       }
     });
   });

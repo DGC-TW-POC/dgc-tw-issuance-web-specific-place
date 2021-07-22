@@ -155,6 +155,8 @@ function GetErrorH_SignMessage(ErrCode) {
             msg = 'A001元件安裝問題，請下載元件安裝檔執行安裝[' + ErrCode + '] ';
             break;
     }
+    window['nhca'] = {}
+    window.nhca.errorMessage = msg;
     return msg;
 }
 

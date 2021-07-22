@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { setUncaughtExceptionCaptureCallback } from 'process';
+import { INHICardData } from '../models/nhicard';
 @Injectable({
     providedIn: 'root'
 })
@@ -8,7 +8,7 @@ export class NHICardService {
     init(): void {
         (window as any).H_Sign('Sign');
     }
-    getBasicDataInCard() {
+    getBasicDataInCard(): Promise<INHICardData> {
         return new Promise((resolve , reject)=> {
             let checkTime = 0;
             let checkInterval = setInterval(() => {

@@ -21,14 +21,14 @@ const routes: Routes = [
       description: "創建"
     }
   } ,
-  {
+  /*{
     path: "search" ,
     component : SearchComponent ,
     data : {
       title: "接種資料查詢",
       description: ""
     }
-  },
+  },*/
   {
     "path" : "**",
     redirectTo : ''

@@ -153,7 +153,7 @@ function onMessage(evt) {
         }
         else {
             alert('error');
-            alert(GetErrorH_SignMessage(sSign));
+            GetErrorH_SignMessage(sSign);
             initHidValue();
             window.event.returnValue = false;
         }
@@ -167,6 +167,6 @@ function onMessage(evt) {
         alert(sConnect);
     } else {
         initHidValue();
-        alert(GetErrorH_SignMessage(message));
+        GetErrorH_SignMessage(message);
     }
 }
