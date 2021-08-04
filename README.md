@@ -1,9 +1,22 @@
 # dgc-tw-vaccine-web
 EU疫苗護照概念式驗證開發前端。
+使用情境為特約地點幫民眾申請qr code。
 - 語言與框架:  Angular, Typescript
 >含了一點react在裡面，從[dgca-issuance-web](https://github.com/eu-digital-green-certificates/dgca-issuance-web)抽離發證api及產生pdf的功能
 
+## DEMO
+- 輸入頁面
+![](https://i.imgur.com/xcWxOuN.png)
+- 用身分證取得被接種者的接種劑次資料
+![](https://i.imgur.com/sGm42Bc.png)
+- 選取劑次
+- 產生qrcode
+![](https://i.imgur.com/UccuTjn.png)
+- [PDF](14abab50-bba6-41df-a502-8d81af425222.pdf)
+
+
 ## 前置作業
+- angular 9
 - 請記得把[dgc-tw-vaccine-service](#)給架起來
 - 請先安裝[angular CLI](https://angular.tw/guide/setup-local)
 > `npm install -g @angular/cli`
@@ -24,7 +37,7 @@ EU疫苗護照概念式驗證開發前端。
         "secure": false
     } ,
     "/dgca-issuance-service" : { //dgc-issuance-service
-        "target" : "https://dgci.dicom.tw",
+        "target" : "https://example.com",
         "secure" : true,
         "changeOrigin": true,
         "auth" : "username:password"
