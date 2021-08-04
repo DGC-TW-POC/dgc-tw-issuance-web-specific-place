@@ -1,8 +1,4 @@
-.btn-warmBlue {
-  color: #fff;
-  background-color: #4752C4;
-  border-color: #4752C4;
-}
+@import url('../../assets/css/global.css');
 
 .table-title {
   padding-bottom: 15px;

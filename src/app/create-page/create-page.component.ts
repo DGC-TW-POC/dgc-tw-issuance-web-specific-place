@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, AfterViewInit, DoCheck, OnDestroy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, AfterViewInit, DoCheck, OnDestroy, Directive, Output } from '@angular/core';
 import { joiTypeMessage, setInputFilter } from '../shared/common';
 import { agencyMap, ICDCData, dataTranslation, ICreationData } from './create-page-models';
 import { vaccineMap, IVaccine } from '../shared/models/vaccine';
@@ -44,6 +44,8 @@ export class CreatePageComponent implements OnInit, AfterViewInit, DoCheck, OnDe
     public eudgc;
     public qrcode: string;
     public TAN: string;
+    public capsOn;
+    private chekcedRomanize:string;
     //#endregion 
     constructor(
         private cdr: ChangeDetectorRef,
@@ -55,7 +57,6 @@ export class CreatePageComponent implements OnInit, AfterViewInit, DoCheck, OnDe
         this.blockUI.start("Loading...");
         this.isInit = false;
     }
-
 
     ngOnInit(): void {
         this.searchParams = {
@@ -161,10 +162,10 @@ export class CreatePageComponent implements OnInit, AfterViewInit, DoCheck, OnDe
     }
     ngAfterViewInit(): void {
         this.init();
-        setInputFilter(document.getElementById("inputFirstName") , function(v) {
+        /*setInputFilter(document.getElementById("inputFirstName") , function(v) {
             //v = v.toUpperCase()
             return /^[A-Z< ]+$/gm.test(v)
-        });
+        });*/
         //取得localStorage儲存的上一次接種資料
         let savedData = localStorage.getItem("dgcCreateData");
         if (savedData) {
@@ -218,6 +219,7 @@ export class CreatePageComponent implements OnInit, AfterViewInit, DoCheck, OnDe
 
     onGetDataFromBackendClick(): void {
         this.blockUI.start("取得資料中...");
+        
         let cloneData = _.cloneDeep(this.data);
         this.searchParams.IdNo = cloneData.IdNo;
         this.searchParams.person.Name = cloneData.Name;
@@ -337,7 +339,7 @@ export class CreatePageComponent implements OnInit, AfterViewInit, DoCheck, OnDe
                 ver: '1.3.0',
                 nam: {
                     fn: normalizeName(this.data.LastName.replace(/</gm , " ")),
-                    fnt: `${this.data.LastName}<${this.data.Name!}`,
+                    fnt: `${this.data.Name!}<${this.data.LastName}`,
                     gn: normalizeName(this.data.FirstName.replace(/</gm , " ")),
                     gnt: this.data.FirstName
                 },
@@ -371,6 +373,7 @@ export class CreatePageComponent implements OnInit, AfterViewInit, DoCheck, OnDe
             lastName = lastName.replace(/-/gm , "<").toUpperCase();
             this.data.FirstName = firstName;
             this.data.LastName = lastName;
+            this.chekcedRomanize = translateSystem;
             this.cdr.detectChanges();
         } catch(e) {
             console.error(e);
@@ -383,9 +386,17 @@ export class CreatePageComponent implements OnInit, AfterViewInit, DoCheck, OnDe
     }
 
     enNameFilter(event) : void {
+        if (!/^[A-Z< ]+$/gm.test(event.target.value)) {
+            event.target.value = event.target.value.replace(/[^A-Z< ]/g, "");
+            return;
+        }
+        let oldSelectionStart = event.target.selectionStart;
+        let oldSelectionEnd = event.target.selectionEnd;
         event.target.value = event.target.value.replace(/[ ]/, "<").toUpperCase();
         this.data.FirstName = event.target.value;
+        event.target.setSelectionRange(oldSelectionStart , oldSelectionEnd);
     }
+
     joiTest(field: string) {
         let validation: joi.ValidationResult = this.dataSchema[field].validate(this.data[field]);
         if (validation.error) {
@@ -393,13 +404,26 @@ export class CreatePageComponent implements OnInit, AfterViewInit, DoCheck, OnDe
         }
         return true;
     }
-
+    //#region  handle顯示class
     displayFieldCss(field: string) {
         return {
             'is-invalid': !this.joiTest(field),
         };
     }
 
+    checkedRomanizeCss(romanizeSystem: string) {
+        if (this.chekcedRomanize == romanizeSystem) {
+            return {
+                'btn-secondary' : true ,
+                'btn-outline-secondary' : false
+            };
+        }
+        return {
+            'btn-secondary' : false,
+            'btn-outline-secondary' : true
+        };
+    }
+    //#endregion
     onVaccItemChange(): void {
         this.selectedVaccItem = this.vaccineItem.find(v => v.id == this.data.VaccID);
     }
@@ -439,10 +463,10 @@ export class CreatePageComponent implements OnInit, AfterViewInit, DoCheck, OnDe
             $(this).attr("id", "qr-code-pdf");
         });
     }
+
     ngOnDestroy(): void {
         //Called once, before the instance is destroyed.
         //Add 'implements OnDestroy' to the class.
         this.blockUI.resetGlobal();
     }
 }
-

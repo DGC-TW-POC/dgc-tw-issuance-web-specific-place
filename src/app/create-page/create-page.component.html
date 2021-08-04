@@ -3,9 +3,10 @@
   <div class="row">
     <div class="col-lg-12 col-md-12 col-12">
       <div class="input-group input-group-sm mb-3">
-        <button class="btn btn-success btn-block" (click)="onReadNHICardClick();">讀取健保卡資料</button>
+        <button class="btn btn-warmBlue btn-block" (click)="onReadNHICardClick();">讀取健保卡資料</button>
       </div>
     </div>
+
     <div class="col-lg-12 col-md-12 col-12">
       <div class="input-group input-group-sm mb-3">
         <div class="input-group-prepend">
@@ -29,24 +30,32 @@
     </div>
 
     <div class="col-lg-3 col-md-3 col-12 mb-3">
-        <button class="btn btn-block btn-outline-secondary h-100" id="btnRomanizeName" (click)="onBtnRomanizeNameClick('HANYU');">
-          漢語拼音
-        </button>
+      <button class="btn btn-block h-100" id="btnRomanizeName"
+        (click)="onBtnRomanizeNameClick('HANYU');"
+        [ngClass]="checkedRomanizeCss('HANYU')">
+        漢語拼音
+      </button>
     </div>
     <div class="col-lg-3 col-md-3 col-12 mb-3">
-        <button class="btn btn-block btn-outline-secondary h-100" id="btnRomanizeName" (click)="onBtnRomanizeNameClick('TONGYONG');">
-          通用拼音
-        </button>
+      <button class="btn btn-block h-100" id="btnRomanizeName"
+        (click)="onBtnRomanizeNameClick('TONGYONG');"
+        [ngClass]="checkedRomanizeCss('TONGYONG')">
+        通用拼音
+      </button>
     </div>
     <div class="col-lg-3 col-md-3 col-12 mb-3">
-        <button class="btn btn-block btn-outline-secondary h-100" id="btnRomanizeName" (click)="onBtnRomanizeNameClick('WG');">
-          威妥瑪(WG)拼音
-        </button>
+      <button class="btn btn-block h-100" id="btnRomanizeName"
+        (click)="onBtnRomanizeNameClick('WG');"
+        [ngClass]="checkedRomanizeCss('WG')">
+        威妥瑪(WG)拼音
+      </button>
     </div>
     <div class="col-lg-3 col-md-3 col-12 mb-3">
-        <button class="btn btn-block btn-outline-secondary h-100" id="btnRomanizeName" (click)="onBtnRomanizeNameClick('MPS-II');">
-          國音第二式拼音
-        </button>
+      <button class="btn btn-block h-100" id="btnRomanizeName"
+        (click)="onBtnRomanizeNameClick('MPS-II');"
+        [ngClass]="checkedRomanizeCss('MPS-II')">
+        國音第二式拼音
+      </button>
     </div>
 
     <div class="col-lg-12 col-md-12 col-12">
@@ -59,124 +68,134 @@
       </div>
     </div>
     <div class="col-lg-12 col-md-12 col-12">
-      <div class="input-group input-group-sm mb-3">
+      <div class="input-group input-group-sm">
         <div class="input-group-prepend">
           <span class="input-group-text font-weight-bold">FirstName(英文名字)</span>
         </div>
         <input type="text" id="inputFirstName" class="form-control form-control-sm"
           [ngClass]="displayFieldCss('FirstName')" [(ngModel)]="data.FirstName" (input)="enNameFilter($event)" required
           placeholder="請輸入英文名字">
-        <div class="invalid-feedback d-block">空格請用`<`小於符號代替</div> </div> </div> </div> <div class="row">
-            <div class="col-lg-12 col-md-12 col-12">
-              <div class="input-group input-group-sm mb-3">
-                <div class="input-group-prepend">
-                  <span class="input-group-text font-weight-bold">身份證字號/護照號碼/居留證號碼*</span>
-                </div>
-                <input type="text" class="form-control form-control-sm" [ngClass]="displayFieldCss('IdNo')"
-                  [(ngModel)]="data.IdNo" required placeholder="請輸入身份證字號或護照號碼"
-                  oninput="this.value = this.value.toUpperCase()">
-              </div>
-            </div>
-            <div class="col-lg-12 col-md-12 col-12">
-              <div class="input-group input-group-sm mb-3">
-                <div class="input-group-prepend">
-                  <span class="input-group-text font-weight-bold">生日</span>
-                </div>
-                <input class="form-control form-control-sm datepicker" [ngClass]="displayFieldCss('Birthday')"
-                  id="inputBirthDate" [(ngModel)]="data.Birthday" required placeholder="請選擇生日或自行輸入(年年年年-月月-日日)">
-              </div>
-            </div>
-            <div class="col-12">
-              <div class="input-group input-group-sm mb-3">
-                <button class="btn btn-success btn-block" (click)="onGetDataFromBackendClick();">
-                  取得接種疫苗資料
-                </button>
-              </div>
-            </div>
-        </div>
-        <hr />
-        <div class="row">
-          <div class="col-lg-12 col-md-12 col-12">
-            <div class="input-group input-group-sm mb-3">
-              <div class="input-group-prepend">
-                <label class="input-group-text font-weight-bold">接種疫苗*</label>
-              </div>
-              <select class="selectpicker selector-vaccine-id form-control form-control-sm" data-live-search="true"
-                [(ngModel)]="data.VaccID" (ngModelChange)="onVaccItemChange();">
-                <option value="" selected disabled>請選擇疫苗*</option>
-                <option *ngFor="let item of vaccineItem" [attr.value]="item.id">{{item.name}}</option>
-              </select>
-              <div class="invalid-feedback d-block" *ngIf="!data.VaccID">Please select vaccine</div>
-            </div>
-          </div>
-          <div class="col-lg-12 col-md-12 col-12">
-            <div class="input-group input-group-sm mb-3">
-              <div class="input-group input-group-sm mb-3">
-                <div class="input-group-prepend">
-                  <span class="input-group-text font-weight-bold">接種疫苗廠商*</span>
-                </div>
-                <input type="text disabled" class="form-control form-control-sm" required readonly
-                  [(ngModel)]="selectedVaccItem.org.name">
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-12 col-md-12 col-12">
-            <div class="input-group input-group-sm mb-3">
-              <div class="input-group input-group-sm mb-3">
-                <div class="input-group-prepend">
-                  <span class="input-group-text font-weight-bold">接種疫苗種類</span>
-                </div>
-                <input type="text disabled" class="form-control form-control-sm" required readonly
-                  [(ngModel)]="selectedVaccItem.type.name">
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-lg-12 col-md-12 col-12">
-            <div class="input-group input-group-sm mb-3">
-              <div class="input-group input-group-sm mb-3">
-                <div class="input-group-prepend">
-                  <span class="input-group-text font-weight-bold">接種劑次</span>
-                </div>
-                <select class="selectpicker selector-vaccine-dose-number form-control form-control-sm"
-                  data-live-search="true" [(ngModel)]="data.VaccDoses">
-                  <option *ngFor="let item of [1,2]" [attr.value]="item">{{item}}</option>
-                </select>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-12 col-md-12 col-12">
-            <div class="input-group input-group-sm mb-3">
-              <div class="input-group input-group-sm mb-3">
-                <div class="input-group-prepend">
-                  <span class="input-group-text font-weight-bold">接種日期*</span>
-                </div>
-                <input type="text" class="form-control form-control-sm datepicker"
-                  [ngClass]="displayFieldCss('InocuDate')" id="inputDateOfVaccination" [(ngModel)]="data.InocuDate"
-                  required>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-lg-6 col-md-6 col-12 mb-3">
-            <button class="btn btn-warmBlue btn-block" (click)="onCreationClick();">創建資料</button>
-          </div>
-          <div class="col-lg-6 col-md-6 col-12">
-            <button class="btn btn-danger btn-block" (click)="clearData();">清除</button>
-          </div>
-        </div>
+      </div>
 
-        <div id="modalQrCode" class="modal fade">
-          <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-              <form>
-                <div class="modal-header">
-                  <h4 class="modal-title">產生資料</h4>
-                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                </div>
-                <div class="modal-body">
+      <div class="invalid-feedback d-block">英文姓名輸入欄僅接受"英文大寫"、"小於符號"、"空白符號"</div>
+
+      <div (capsLock)="capsOn=$event">
+        <div class="alert alert-danger text-center" role="alert" *ngIf="!capsOn">大寫未開啟</div>
+      </div>
+    </div>
+  </div>
+    <div class="row">
+      <div class="col-lg-12 col-md-12 col-12">
+        <div class="input-group input-group-sm mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text font-weight-bold">身份證字號/護照號碼/居留證號碼*</span>
+          </div>
+          <input type="text" class="form-control form-control-sm" [ngClass]="displayFieldCss('IdNo')"
+            [(ngModel)]="data.IdNo" required placeholder="請輸入身份證字號或護照號碼"
+            oninput="this.value = this.value.toUpperCase()">
+        </div>
+      </div>
+      <div class="col-lg-12 col-md-12 col-12">
+        <div class="input-group input-group-sm mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text font-weight-bold">生日</span>
+          </div>
+          <input class="form-control form-control-sm datepicker" [ngClass]="displayFieldCss('Birthday')"
+            id="inputBirthDate" [(ngModel)]="data.Birthday" required placeholder="請選擇生日或自行輸入(年年年年-月月-日日)">
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="input-group input-group-sm mb-3">
+          <button class="btn btn-warmBlue btn-block" (click)="onGetDataFromBackendClick();">
+            取得接種疫苗資料
+          </button>
+        </div>
+      </div>
+    </div>
+    <hr />
+    <div class="row">
+      <div class="col-lg-12 col-md-12 col-12">
+        <div class="input-group input-group-sm mb-3">
+          <div class="input-group-prepend">
+            <label class="input-group-text font-weight-bold">接種疫苗*</label>
+          </div>
+          <select class="selectpicker selector-vaccine-id form-control form-control-sm" data-live-search="true"
+            [(ngModel)]="data.VaccID" (ngModelChange)="onVaccItemChange();">
+            <option value="" selected disabled>請選擇疫苗*</option>
+            <option *ngFor="let item of vaccineItem" [attr.value]="item.id">{{item.name}}</option>
+          </select>
+          <div class="invalid-feedback d-block" *ngIf="!data.VaccID">Please select vaccine</div>
+        </div>
+      </div>
+      <div class="col-lg-12 col-md-12 col-12">
+        <div class="input-group input-group-sm mb-3">
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text font-weight-bold">接種疫苗廠商*</span>
+            </div>
+            <input type="text disabled" class="form-control form-control-sm" required readonly
+              [(ngModel)]="selectedVaccItem.org.name">
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12 col-md-12 col-12">
+        <div class="input-group input-group-sm mb-3">
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text font-weight-bold">接種疫苗種類</span>
+            </div>
+            <input type="text disabled" class="form-control form-control-sm" required readonly
+              [(ngModel)]="selectedVaccItem.type.name">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12 col-md-12 col-12">
+        <div class="input-group input-group-sm mb-3">
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text font-weight-bold">接種劑次</span>
+            </div>
+            <select class="selectpicker selector-vaccine-dose-number form-control form-control-sm"
+              data-live-search="true" [(ngModel)]="data.VaccDoses">
+              <option *ngFor="let item of [1,2]" [attr.value]="item">{{item}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12 col-md-12 col-12">
+        <div class="input-group input-group-sm mb-3">
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text font-weight-bold">接種日期*</span>
+            </div>
+            <input type="text" class="form-control form-control-sm datepicker" [ngClass]="displayFieldCss('InocuDate')"
+              id="inputDateOfVaccination" [(ngModel)]="data.InocuDate" required>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-6 col-md-6 col-12 mb-3">
+        <button class="btn btn-warmBlue btn-block" (click)="onCreationClick();">創建資料</button>
+      </div>
+      <div class="col-lg-6 col-md-6 col-12">
+        <button class="btn btn-danger btn-block" (click)="clearData();">清除</button>
+      </div>
+    </div>
+
+    <div id="modalQrCode" class="modal fade">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <form>
+            <div class="modal-header">
+              <h4 class="modal-title">產生資料</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+              <div class="card">
+                <div class="card-body">
                   <div class="row align-items-center">
                     <div class="col-6">
                       <div class="col-12 mb-3">
@@ -226,47 +245,53 @@
                       </div>
                     </div>
                   </div>
-
-                  <qrcode [qrdata]="qrcode " [width]="281" [errorCorrectionLevel]="'M'" [elementType]="'canvas'"
-                    class="qr-code-pdf-parent" style="display: none;"></qrcode>
-
                 </div>
-                <div class="modal-footer">
-                  <button class="btn btn-success" data-dismiss="modal">OK</button>
-                  <app-react-wrapper [eudgc]="eudgc"></app-react-wrapper>
-                </div>
-              </form>
+              </div>
+              <div class="row align-items-center">
+
+
+              </div>
+
+              <qrcode [qrdata]="qrcode " [width]="281" [errorCorrectionLevel]="'M'" [elementType]="'canvas'"
+                class="qr-code-pdf-parent" style="display: none;"></qrcode>
+
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-success" data-dismiss="modal">OK</button>
+              <app-react-wrapper [eudgc]="eudgc"></app-react-wrapper>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- search result selection Modal -->
+    <div class="modal fade" id="modelSearchResultSelection" tabindex="-1" role="dialog"
+      aria-labelledby="modelTitleSearchResultSelection" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">匯入接種疫苗資料</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div *ngIf="searchResult.rows.length>0">
+              <p>身份證字號: {{searchResult.rows[0].person.IdNo}}</p>
+              <p>姓名: {{searchResult.rows[0].person.Name}}</p>
+              <p>生日: {{searchResult.rows[0].person.Birthday}}</p>
+            </div>
+            <div class="card btn btn-outline-info mb-4" *ngFor="let item of searchResult.rows; index as i;">
+              <div class="card-body pointer-event" (click)="backendDataToCreationData(item)">
+                <h5 class="crad-title text-center">第{{i+1}}劑</h5>
+              </div>
             </div>
           </div>
-        </div>
-
-        <!-- search result selection Modal -->
-        <div class="modal fade" id="modelSearchResultSelection" tabindex="-1" role="dialog"
-          aria-labelledby="modelTitleSearchResultSelection" aria-hidden="true">
-          <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title">匯入接種疫苗資料</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                <div *ngIf="searchResult.rows.length>0">
-                  <p>身份證字號: {{searchResult.rows[0].person.IdNo}}</p>
-                  <p>姓名: {{searchResult.rows[0].person.Name}}</p>
-                  <p>生日: {{searchResult.rows[0].person.Birthday}}</p>
-                </div>
-                <div class="card btn btn-outline-info mb-4" *ngFor="let item of searchResult.rows; index as i;">
-                  <div class="card-body pointer-event" (click)="backendDataToCreationData(item)">
-                    <h5 class="crad-title text-center">第{{i+1}}劑</h5>
-                  </div>
-                </div>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              </div>
-            </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           </div>
         </div>
+      </div>
+    </div>
 </main>

@@ -12,7 +12,7 @@ import { QRCodeModule } from 'angularx-qrcode';
 import { FooterComponent } from './footer/footer.component';
 import { ReactShowPdfComponent } from './react-component/components/show-certificate.component-wrapper';
 import { SearchComponent } from './search/search.component';
-
+import { DirectivesModule } from './shared/modules/directives.module';
 
 @NgModule({
   declarations: [
@@ -31,7 +31,8 @@ import { SearchComponent } from './search/search.component';
     AppRoutingModule,
     HttpClientModule,
     QRCodeModule,
-    NgxPaginationModule
+    NgxPaginationModule,
+    DirectivesModule
   ],
   providers: [],
   bootstrap: [AppComponent]

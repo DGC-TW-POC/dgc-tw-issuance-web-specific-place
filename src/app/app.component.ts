@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation, ɵCompiler_compileModuleSync__POST_R3__ } from '@angular/core';
+import { Component, Directive, EventEmitter, HostListener, Output, ViewEncapsulation, ɵCompiler_compileModuleSync__POST_R3__ } from '@angular/core';
 import { filter, map, mergeMap } from 'rxjs/operators';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { SEOService } from './shared/seoservice';
@@ -15,6 +15,7 @@ export class AppComponent {
     "接種資料查詢" : "search",
     "接種資料創建" : "create"
   };
+  public capsOn;
   constructor(private router: Router,
               private _SEOService : SEOService,
               private activatedRoute : ActivatedRoute) {}
